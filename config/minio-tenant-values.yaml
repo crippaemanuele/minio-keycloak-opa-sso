@@ -1,0 +1,51 @@
+# Configurazione del tenant MinIO
+tenant:
+  # Nome del Tenant MinIO
+  name: myminio-tenant
+  
+  # Immagine del container MinIO
+  image:
+    repository: quay.io/minio/minio
+    tag: RELEASE.2025-03-12T18-04-18Z
+    pullPolicy: IfNotPresent
+  
+  # Secret Kubernetes per le variabili d'ambiente di MinIO
+  configuration:
+    name: myminio-env-configuration
+  
+  # Secret che contiene le credenziali di accesso di MinIO
+  configSecret:
+    name: myminio-env-configuration
+    accessKey: minioadmin  # Nome utente di default (cambialo in produzione!)
+    secretKey: minioadmin  # Password di default (cambiala in produzione!)
+  
+  # Configurazione dei pool di storage
+  pools:
+    - servers: 4  # Numero di pod MinIO
+      name: pool-0
+      volumesPerServer: 4  # Numero di volumi per ogni server
+      size: 10Gi  # Dimensione di ogni volume
+      storageClassName: standard  # Storage class di Kubernetes
+  
+  # Configurazione del certificato TLS per MinIO
+  certificate:
+    requestAutoCert: true  # Abilita la generazione automatica di certificati TLS
+    externalCertSecret: [ ]  # Se usi certificati personalizzati, specifica il Secret qui
+  
+  # Configurazione Ingress per esporre il servizio MinIO
+  ingress:
+    api:
+      enabled: true
+      host: minio.local  # Cambia con il dominio desiderato
+    console:
+      enabled: true
+      host: minio-console.local  # Cambia con il dominio desiderato
+  
+  # Configurazione del logging
+  logging: { }
+  
+  # Configurazione delle metriche per il monitoraggio
+  metrics:
+    enabled: false  # Abilita se vuoi monitorare MinIO con Prometheus
+    port: 9000
+    protocol: http
