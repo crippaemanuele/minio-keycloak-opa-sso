@@ -1,0 +1,94 @@
+apiVersion: v1
+items:
+- apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"annotations":{},"name":"nginx","namespace":"default"},"spec":{"rules":[{"host":"local.xyz","http":{"paths":[{"backend":{"service":{"name":"nginx","port":{"number":80}}},"path":"/","pathType":"Prefix"}]}}]}}
+    creationTimestamp: "2025-03-26T08:59:25Z"
+    generation: 2
+    name: nginx
+    namespace: default
+    resourceVersion: "28232"
+    uid: 7c1ee4ea-c7d3-47d5-9f5e-f282456dc8dd
+  spec:
+    ingressClassName: nginx
+    rules:
+    - host: local.xyz
+      http:
+        paths:
+        - backend:
+            service:
+              name: nginx
+              port:
+                number: 80
+          path: /
+          pathType: Prefix
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 192.168.49.2
+- apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"annotations":{"nginx.ingress.kubernetes.io/rewrite-target":"/"},"name":"keycloak-ingress","namespace":"keycloak"},"spec":{"rules":[{"host":"local.xyz","http":{"paths":[{"backend":{"service":{"name":"keycloak","port":{"number":80}}},"path":"/keycloak","pathType":"Prefix"}]}}]}}
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    creationTimestamp: "2025-03-26T11:09:09Z"
+    generation: 1
+    name: keycloak-ingress
+    namespace: keycloak
+    resourceVersion: "28929"
+    uid: b3d6987e-c616-4a92-a02c-139bf3372506
+  spec:
+    ingressClassName: nginx
+    rules:
+    - host: local.xyz
+      http:
+        paths:
+        - backend:
+            service:
+              name: keycloak
+              port:
+                number: 80
+          path: /keycloak
+          pathType: Prefix
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 192.168.49.2
+- apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"annotations":{"nginx.ingress.kubernetes.io/rewrite-target":"/"},"name":"minio-ingress","namespace":"minio-tenant"},"spec":{"rules":[{"host":"local.xyz","http":{"paths":[{"backend":{"service":{"name":"myminio-tenant-console","port":{"number":9443}}},"path":"/minio","pathType":"Prefix"}]}}]}}
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    creationTimestamp: "2025-03-26T11:09:04Z"
+    generation: 1
+    name: minio-ingress
+    namespace: minio-tenant
+    resourceVersion: "28930"
+    uid: 9526eead-d772-4163-9eef-ff052cff452e
+  spec:
+    ingressClassName: nginx
+    rules:
+    - host: local.xyz
+      http:
+        paths:
+        - backend:
+            service:
+              name: myminio-tenant-console
+              port:
+                number: 9443
+          path: /minio
+          pathType: Prefix
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 192.168.49.2
+kind: List
+metadata:
+  resourceVersion: ""
