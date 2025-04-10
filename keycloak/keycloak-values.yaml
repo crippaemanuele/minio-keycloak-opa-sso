@@ -1,5 +1,0 @@
-ingress:
-  enabled: true
-  hostname: keycloak.local
-  pathType: Prefix
-  path: / 
