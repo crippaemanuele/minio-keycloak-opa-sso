@@ -1,0 +1,17 @@
+tenants:
+  - name: minio-tenant
+    configuration:
+      name: config-env
+      env:
+        - name: MINIO_IDENTITY_OPENID_CONFIG_URL
+          value: "http://keycloak.local:8080/realms/minio_integration/.well-known/openid-configuration"
+        - name: MINIO_IDENTITY_OPENID_CLIENT_ID
+          value: "minio-client"
+        - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+          value: "yz5pG9YuNikFNcYXLRZOL34rLIsnVACR"
+        - name: MINIO_IDENTITY_OPENID_CLAIM_NAME
+          value: "policy"
+        - name: MINIO_IDENTITY_OPENID_SCOPES
+          value: "openid,profile,email,policy"
+        - name: MINIO_IDENTITY_OPENID_REDIRECT_URI
+          value: "http://minio-console.local/oauth_callback"
