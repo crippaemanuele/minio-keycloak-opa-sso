@@ -93,7 +93,15 @@ tenant:
     accessKey: minio
     secretKey: minio123
     #existingSecret: true
-
+  identity:
+  openid:
+    enabled: true
+    configUrl: https://keycloak.local/realms/minio-sso/.well-known/openid-configuration
+    clientId: minio-client
+    clientSecret: ""  # Se necessario
+    redirectUri: https://minio.local/oauth_callback
+    claimName: policy
+    scopes: "openid,profile,email"
   ###
   # Metadata that will be added to the statefulset and pods of all pools
   poolsMetadata:

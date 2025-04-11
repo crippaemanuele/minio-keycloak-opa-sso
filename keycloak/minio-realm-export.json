@@ -1,0 +1,38 @@
+{
+    "realm": "minio-sso",
+    "enabled": true,
+    "clients": [
+      {
+        "clientId": "minio-client",
+        "name": "MinIO SSO Client",
+        "enabled": true,
+        "protocol": "openid-connect",
+        "publicClient": true,
+        "redirectUris": ["https://minio.local/oauth_callback"],
+        "baseUrl": "https://minio.local",
+        "adminUrl": "https://minio.local",
+        "standardFlowEnabled": true,
+        "implicitFlowEnabled": false,
+        "directAccessGrantsEnabled": true,
+        "rootUrl": "https://minio.local"
+      }
+    ],
+    "users": [
+      {
+        "username": "user",
+        "enabled": true,
+        "emailVerified": true,
+        "firstName": "MinIO",
+        "lastName": "User",
+        "email": "minio.user@example.com",
+        "credentials": [
+          {
+            "type": "password",
+            "value": "user",
+            "temporary": false
+          }
+        ]
+      }
+    ]
+  }
+  
