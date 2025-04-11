@@ -496,6 +496,7 @@ ingress:
     labels: { }
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
     tls:
       - hosts: [minio.local]
         secretName: minio-api-tls
@@ -508,6 +509,7 @@ ingress:
     labels: { }
     annotations: 
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
     tls:
       - hosts: [minio-console.local]
         secretName: minio-console-tls
