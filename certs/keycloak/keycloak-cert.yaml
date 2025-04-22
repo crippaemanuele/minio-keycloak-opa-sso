@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak-local-cert
+  namespace: keycloak
+spec:
+  secretName: keycloak.local-tls
+  duration: 8760h # 1 anno
+  renewBefore: 720h # 30 giorni
+  issuerRef:
+    name: selfsigned-cluster-issuer
+    kind: ClusterIssuer
+  commonName: keycloak.local
+  dnsNames:
+    - keycloak.local
