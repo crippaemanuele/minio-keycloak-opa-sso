@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-console-certificate
+  namespace: minio-tenant # Assicurati che sia il namespace corretto
+spec:
+  secretName: minio-console-tls-secret
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - minio-console.local
