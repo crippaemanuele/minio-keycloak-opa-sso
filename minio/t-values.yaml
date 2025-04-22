@@ -1,57 +1,36 @@
 tenant:
-  name: minio  # Nome del tenant
+  name: minio
+
   image:
-    repository: quay.io/minio/minio  # Immagine MinIO
-    tag: RELEASE.2025-04-03T14-56-28Z  # Versione dell'immagine
-    pullPolicy: IfNotPresent  # Pull dell'immagine solo se non presente
-  imagePullSecret: { }  # Per immagini private (non usato qui)
-  initContainers: [ ]  # Contenitori iniziali opzionali
-  scheduler: { }  # Personalizzazioni dello scheduler (vuoto)
-  configuration:
-    name: minio-env-configuration  # Nome del ConfigMap usato (env vars)
+    repository: quay.io/minio/minio
+    tag: RELEASE.2025-04-03T14-56-28Z
+    pullPolicy: IfNotPresent
+
   configSecret:
-    name: minio-env-configuration  # Nome del Secret con le credenziali
-    accessKey: minio  # Access key MinIO
-    secretKey: minio123  # Secret key MinIO
-  identity:
-    openid:
-      enabled: true  # Abilita OIDC per login con Keycloak
-      configUrl: https://keycloak.local/realms/minio-sso/.well-known/openid-configuration  # URL config OIDC
-      clientId: minio-client  # Client ID registrato in Keycloak
-      clientSecret: ""  # Client secret se richiesto
-      redirectUri: https://minio.local/oauth_callback  # Callback per il login
-      claimName: policy  # Attributo del token con le policy
-      scopes: "openid,profile,email"  # Scopes richiesti
-  poolsMetadata:
-    annotations: { }
-    labels: { }
-  pools:  # Pool di storage
-    - servers: 1  # Numero di server
-      name: pool-0
-      volumesPerServer: 1  # Numero volumi per server
-      size: 10Gi  # Dimensione volume
-      storageClassname: standard  # Storage class usata
-      storageAnnotations: { }
-      storageLabels: { }
-      annotations: { }
-      labels: { }
-      tolerations: [ ]  # Tolerations per nodi specifici
-      nodeSelector: { }  # Node selector
-      affinity: { }  # Affinity per nodi/pod
-      resources:  # Risorse richieste e limiti
+    name: minio-env-configuration
+    accessKey: minio
+    secretKey: minio123
+
+  pools:
+    - name: pool-0
+      servers: 1
+      volumesPerServer: 1
+      size: 10Gi
+      storageClassname: standard
+      resources:
         requests:
           memory: "512Mi"
           cpu: "250m"
         limits:
           memory: "1Gi"
           cpu: "500m"
-      securityContext:  # Sicurezza filesystem
+      securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
         runAsNonRoot: true
-      containerSecurityContext:  # Sicurezza container
+      containerSecurityContext:
         runAsUser: 1000
         runAsGroup: 1000
         runAsNonRoot: true
@@ -61,62 +40,48 @@ tenant:
             - ALL
         seccompProfile:
           type: RuntimeDefault
-      topologySpreadConstraints: [ ]  # Per distribuzione pod
-  mountPath: /export  # Percorso montaggio interno
-  subPath: /data  # Sottocartella dei volumi
+
+  mountPath: /export
+  subPath: /data
+
+  buckets:
+    - name: referti-clinica
+
   metrics:
-    enabled: true  # Esporta metriche Prometheus
+    enabled: true
     port: 9000
     protocol: http
+
   certificate:
-    externalCaCertSecret: [ ]  # Certificati esterni (vuoti)
-    externalCertSecret: [ ]
-    requestAutoCert: true  # Richiede auto-cert da cert-manager
-    certConfig: { }
-  features:
-    bucketDNS: false
-    domains: { }
-    enableSFTP: false
-  buckets:
-    - name: referti-clinica  # Bucket predefinito
-  users: [ ]  # Utenti locali (vuoto: usi solo SSO)
-  podManagementPolicy: Parallel
-  liveness: { }
-  readiness: { }
-  startup: { }
-  lifecycle: { }
-  exposeServices: { }
-  serviceAccountName: ""
-  prometheusOperator: false
-  logging: { }
-  serviceMetadata: { }
-  env: [ ]
-  priorityClassName: ""
-  additionalVolumes: [ ]
-  additionalVolumeMounts: [ ]
+    # Assumiamo che i certificati siano già creati nei secrets minio-api-tls e minio-console-tls
+    externalCertSecret:
+      - name: myminio-tls
+        type: kubernetes.io/tls
+
   ingress:
     api:
-      enabled: true  # Ingress per API MinIO
+      enabled: true
       ingressClassName: "nginx"
-      labels: { }
       annotations:
-        ncert-manager.io/cluster-issuer: selfsigned-cluster-issuer
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        cert-manager.io/cluster-issuer: selfsigned-root
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
       tls:
-        - hosts: [minio.local]
+        - hosts: 
+            - minio.local
           secretName: minio-api-tls
       host: minio.local
       path: /
       pathType: Prefix
+
     console:
-      enabled: true  # Ingress per la console
+      enabled: true
       ingressClassName: "nginx"
-      labels: { }
-      annotations: 
-        cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-root
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
       tls:
-        - hosts: [minio-console.local]
+        - hosts: 
+            - minio-console.local
           secretName: minio-console-tls
       host: minio-console.local
       path: /
