@@ -79,7 +79,7 @@ service:
     extraPorts: []
 auth:
   existingSecret: "keycloak-secrets" # Create this secret with adminPassword, postgres-password, etc.
-  passwordSecretKey: "adminPassword"
+  passwordSecretKey: "admin-password"
 postgresql:
   auth:
     existingSecret: "keycloak-secrets" #use the same secret
