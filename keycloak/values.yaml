@@ -22,6 +22,10 @@ tls:
 
 httpRelativePath: "/"
 
+extraEnvVars:
+  - name: KC_HTTP_RELATIVE_PATH
+    value: "/"
+
 service:
   type: ClusterIP
   http:
@@ -93,9 +97,3 @@ persistence:
   enabled: true
   storageClass: ""
   size: 8Gi
-
-extraStartupArgs: "--http-relative-path=/"
-extraEnvVars:
-  - name: KC_HTTP_RELATIVE_PATH
-    value: "/"
-
