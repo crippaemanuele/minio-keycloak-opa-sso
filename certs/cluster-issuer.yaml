@@ -1,6 +1,6 @@
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+apiVersion: cert-manager.io/v1  # Specifica la versione API di cert-manager
+kind: ClusterIssuer  # Tipo di risorsa: ClusterIssuer
 metadata:
-  name: selfsigned-cluster-issuer
+  name: selfsigned-cluster-issuer  # Nome del ClusterIssuer
 spec:
-  selfSigned: {}
+  selfSigned: {}  # Configurazione per un certificato self-signed
