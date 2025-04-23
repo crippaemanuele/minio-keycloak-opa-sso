@@ -1,6 +1,6 @@
 # MinIO + Keycloak SSO su Kubernetes
 
-> Setup completo di un ambiente locale Kubernetes con MinIO e Keycloak integrati via OIDC (OpenID Connect), con TLS gestito tramite cert-manager e ingress nginx.
+> Questo progetto fa parte della mia tesi e si propone di configurare un ambiente Kubernetes locale che integra MinIO e Keycloak tramite SSO (Single Sign-On) utilizzando OIDC (OpenID Connect). L'obiettivo è esplorare e implementare un'infrastruttura sicura e scalabile, con certificati TLS gestiti tramite `cert-manager` e ingress gestiti da NGINX.
 
 ---
 
@@ -13,9 +13,21 @@
 ├── keycloak/               # Valori Helm, export realm e override Keycloak
 ├── minio/                  # Valori Helm per MinIO
 ├── nginx/                  # Ingress per la console MinIO
-├── keycloakaccessvalues.yaml  # Access config tra MinIO e Keycloak
+├── keycloakaccessvalues.yaml  # Configurazione di accesso tra MinIO e Keycloak
 ├── mc.exe                  # MinIO Client (per Windows)
 ```
+
+---
+
+## 🎓 Obiettivo del progetto di tesi
+
+L'obiettivo principale del progetto è studiare e implementare un'integrazione tra MinIO e Keycloak per gestire l'autenticazione centralizzata tramite OIDC. Questo include:
+
+- Configurazione di un ambiente Kubernetes locale per test e sviluppo.
+- Utilizzo di `cert-manager` per la gestione automatica dei certificati TLS.
+- Configurazione di ingress NGINX per l'accesso sicuro ai servizi.
+- Implementazione di un flusso SSO tra MinIO e Keycloak.
+- Esplorazione delle funzionalità multi-tenant di MinIO.
 
 ---
 
@@ -98,3 +110,5 @@
 - Aggiungere script di bootstrap
 - Usare certificati validi con DNS pubblico
 - Automazione con Makefile o Helmfile
+- Documentare il flusso SSO tra MinIO e Keycloak
+- Testare l'integrazione in un ambiente di produzione simulato
