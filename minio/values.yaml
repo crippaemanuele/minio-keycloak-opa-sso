@@ -1,102 +1,154 @@
-tenant: # Configurazione principale del tenant MinIO
-  name: minio # Nome del tenant MinIO
-  image: # Configurazione dell'immagine del container MinIO
-    repository: quay.io/minio/minio # Repository dell'immagine MinIO
-    tag: RELEASE.2025-04-08T15-41-24Z # Tag dell'immagine MinIO
-    pullPolicy: IfNotPresent # Politica di pull dell'immagine
-  imagePullSecret: {} # Segreti per il pull dell'immagine (se necessario) - Corretto da {} a []
-  initContainers: [] # Container di inizializzazione - Corretto da [ ] a []
-  scheduler: {} # Configurazione dello scheduler Kubernetes - Corretto da { } a {}
-  configSecret: # Segreto Kubernetes per la configurazione di MinIO
-    name: minio-env-configuration # Nome del segreto
-    accessKey: minio # Access key di MinIO
-    secretKey: minio123 # Secret key di MinIO
-  poolsMetadata: # Metadati per i pool di MinIO
-    annotations: {} # Annotazioni per i pod del pool - Corretto da { } a {}
-    labels: {} # Etichette per i pod del pool - Corretto da { } a {}
-  pools: # Configurazione dei pool di MinIO
-    - servers: 1 # Numero di server nel pool - Modificato a 1 per la tesi
-      name: pool-0 # Nome del pool
-      volumesPerServer: 1 # Volumi per server - Modificato a 1 per la tesi
-      size: 10Gi # Dimensione dei volumi
-      storageAnnotations: {} # Annotazioni per i volumi persistenti - Corretto da { } a {}
-      storageLabels: {} # Etichette per i volumi persistenti - Corretto da { } a {}
-      annotations: {} # Annotazioni per i pod - Corretto da { } a {}
-      labels: {} # Etichette per i pod - Corretto da { } a {}
-      tolerations: [] # Tolleranze per i pod - Corretto da [ ] a []
-      nodeSelector: {} # Selettore di nodi per i pod - Corretto da { } a {}
-      affinity: {} # Affinità per i pod - Corretto da { } a {}
-      resources: {} # Risorse richieste/limitate per i pod - Corretto da { } a {}
-      securityContext: # Contesto di sicurezza per i pod
-        runAsUser: 1000 # Utente per l'esecuzione del container
-        runAsGroup: 1000 # Gruppo per l'esecuzione del container
-        fsGroup: 1000 # Gruppo del filesystem
-        fsGroupChangePolicy: "OnRootMismatch" # Politica per la modifica del gruppo del filesystem
-        runAsNonRoot: true # Richiede che il container sia eseguito come non-root
-      containerSecurityContext: # Contesto di sicurezza per il container
-        runAsUser: 1000 # Utente per l'esecuzione del container
-        runAsGroup: 1000 # Gruppo per l'esecuzione del container
-        runAsNonRoot: true # Richiede che il container sia eseguito come non-root
-        allowPrivilegeEscalation: false # Disabilita l'escalation dei privilegi
-        capabilities: # Capacità del container
+# Configurazione specifica per il tenant
+tenant:
+  name: minio  # Nome del tenant
+
+  # Configurazione dell'immagine per il container MinIO
+  image:
+    repository: quay.io/minio/minio  # Repository dell'immagine MinIO
+    tag: RELEASE.2025-04-03T14-56-28Z  # Tag dell'immagine
+    pullPolicy: IfNotPresent  # Politica di pull dell'immagine
+
+  imagePullSecret: {}  # Secret per il pull delle immagini (se necessario)
+
+  initContainers: []  # Elenco dei container di inizializzazione (vuoto di default)
+
+  scheduler: {}  # Configurazione personalizzata dello scheduler (se necessaria)
+
+  # Configurazione delle variabili di ambiente
+  configuration:
+    name: minio-env-configuration  # Nome del ConfigMap per le variabili di ambiente
+
+  # Secret per le credenziali MinIO
+  configSecret:
+    name: minio-env-configuration  # Nome del secret
+    accessKey: minio  # Chiave di accesso per MinIO
+    secretKey: minio123  # Chiave segreta per MinIO
+
+  # Metadati per i pool di storage
+  poolsMetadata:
+    annotations: {}  # Annotazioni per i pool di storage
+    labels: {}  # Etichette per i pool di storage
+
+  # Configurazione dei pool di storage
+  pools:
+    - servers: 1  # Numero di server nel pool
+      name: pool-0  # Nome del pool
+      volumesPerServer: 1  # Numero di volumi per server
+      size: 10Gi  # Dimensione di ogni volume
+      storageClassname: standard  # Classe di storage da utilizzare
+      storageAnnotations: {}  # Annotazioni per lo storage
+      storageLabels: {}  # Etichette per lo storage
+      annotations: {}  # Annotazioni per il pool
+      labels: {}  # Etichette per il pool
+      tolerations: []  # Tolleranze per la schedulazione
+      nodeSelector: {}  # Selettore dei nodi per la schedulazione
+      affinity: {}  # Regole di affinità per la schedulazione
+      resources:  # Richieste e limiti delle risorse
+        requests:
+          memory: "512Mi"  # Richiesta di memoria
+          cpu: "250m"  # Richiesta di CPU
+        limits:
+          memory: "1Gi"  # Limite di memoria
+          cpu: "500m"  # Limite di CPU
+      securityContext:  # Contesto di sicurezza per il pool
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        runAsNonRoot: true
+      containerSecurityContext:  # Contesto di sicurezza per il container
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
           drop:
-            - ALL # Rimuove tutte le capacità
-        seccompProfile: # Profilo Seccomp
-          type: RuntimeDefault # Usa il profilo di runtime predefinito
-      topologySpreadConstraints: [] # Vincoli di distribuzione della topologia - Corretto da [ ] a []
-  mountPath: /export # Percorso di mount per i volumi
-  subPath: /data # Sottodirectory per i dati di MinIO
-  metrics: # Configurazione delle metriche Prometheus
-    enabled: false # Abilita le metriche
-    port: 9000 # Porta per le metriche
-    protocol: http # Protocollo per le metriche
-  certificate: # Configurazione dei certificati TLS
-    externalCaCertSecret: [] # Segreti per i certificati CA esterni - Corretto da [ ] a []
-    externalCertSecret: [] # Segreti per i certificati esterni - Corretto da [ ] a []
-    requestAutoCert: true # Richiesta di certificati automatici
-    certConfig: {} # Configurazione dei certificati - Corretto da { } a {}
-  features: # Funzionalità di MinIO
-    bucketDNS: false # Abilita il DNS per i bucket
-    domains: {} # Domini personalizzati - Corretto da { } a {}
-    enableSFTP: false # Abilita SFTP
-  buckets: [] # Bucket da creare - Corretto da [ ] a []
-  users: [] # Utenti da creare - Corretto da [ ] a []
-  podManagementPolicy: Parallel # Politica di gestione dei pod
-  liveness: {} # Probe di liveness - Corretto da { } a {}
-  readiness: {} # Probe di readiness - Corretto da { } a {}
-  startup: {} # Probe di startup - Corretto da { } a {}
-  lifecycle: {} # Hook del ciclo di vita - Corretto da { } a {}
-  exposeServices: {} # Espone i servizi MinIO - Corretto da { } a {}
-  serviceAccountName: "" # Nome dell'account di servizio
-  prometheusOperator: false # Integrazione con Prometheus Operator
-  logging: {} # Configurazione del logging - Corretto da { } a {}
-  serviceMetadata: {} # Metadati per i servizi - Corretto da { } a {}
-  env: [] # Variabili d'ambiente per MinIO - Corretto da [ ] a []
-  priorityClassName: "" # Classe di priorità per i pod
-  additionalVolumes: [] # Volumi aggiuntivi - Corretto da [ ] a []
-  additionalVolumeMounts: [] # Mount per i volumi aggiuntivi - Corretto da [ ] a []
-ingress: # Configurazione dell'Ingress per MinIO
-  api: # Ingress per l'API MinIO
-    enabled: true # Abilita l'Ingress
-    ingressClassName: "nginx" # Nome della classe Ingress
-    labels: {} # Etichette per l'Ingress
-    annotations: {} # Annotazioni per l'Ingress
-    tls: # Configurazione TLS per l'Ingress
-      - hosts:
-          - minio.local # Hostname per l'API MinIO
-        cert-manager.io/cluster-issuer: "selfsigned-cluster-issuer" # Nome del ClusterIssuer di Cert-Manager
-    host: minio.local # Hostname per l'Ingress
-    path: / # Percorso per l'Ingress
-    pathType: Prefix # Tipo di percorso
-  console: # Ingress per la console MinIO
-    enabled: true # Abilita l'Ingress
-    ingressClassName: "nginx" # Nome della classe Ingress
-    labels: {} # Etichette per l'Ingress
-    annotations: {} # Annotazioni per l'Ingress
-    tls: # Configurazione TLS per l'Ingress
-      - hosts:
-          - minio-console.local # Hostname per la console MinIO
-        cert-manager.io/cluster-issuer: "selfsigned-cluster-issuer" # Nome del ClusterIssuer di Cert-Manager
-    host: minio-console.local # Hostname per l'Ingress
-    path: / # Percorso per l'Ingress
-    pathType: Prefix # Tipo di percorso
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      topologySpreadConstraints: []  # Vincoli di distribuzione topologica
+
+  mountPath: /export  # Percorso di montaggio per lo storage
+  subPath: /data  # Sotto-percorso per lo storage
+
+  # Configurazione delle metriche
+  metrics:
+    enabled: true  # Abilita le metriche
+    port: 9000  # Porta per le metriche
+    protocol: http  # Protocollo per le metriche
+
+  # Configurazione dei certificati
+  certificate:
+    externalCaCertSecret: []  # Secret per il certificato CA esterno
+    externalCertSecret: []  # Secret per il certificato esterno
+    requestAutoCert: true  # Richiedi automaticamente i certificati
+    certConfig: {}  # Configurazione aggiuntiva per i certificati
+
+  # Funzionalità aggiuntive
+  features:
+    bucketDNS: false  # Abilita il DNS per i bucket
+    domains: {}  # Domini personalizzati
+    enableSFTP: false  # Abilita il supporto SFTP
+
+  # Configurazione dei bucket
+  buckets:
+    - name: referti-clinica  # Nome del bucket
+
+  users: []  # Elenco degli utenti (vuoto di default)
+
+  podManagementPolicy: Parallel  # Politica di gestione dei pod
+
+  liveness: {}  # Configurazione del probe di liveness
+  readiness: {}  # Configurazione del probe di readiness
+  startup: {}  # Configurazione del probe di startup
+  lifecycle: {}  # Hook per il ciclo di vita
+
+  exposeServices: {}  # Configurazione per l'esposizione dei servizi
+  serviceAccountName: ""  # Nome del service account
+  prometheusOperator: false  # Abilita l'integrazione con Prometheus Operator
+  logging: {}  # Configurazione del logging
+  serviceMetadata: {}  # Metadati per i servizi
+  env: []  # Variabili di ambiente aggiuntive
+  priorityClassName: ""  # Nome della classe di priorità
+  additionalVolumes: []  # Volumi aggiuntivi
+  additionalVolumeMounts: []  # Mount dei volumi aggiuntivi
+
+# Configurazione dell'ingress
+ingress:
+  api:
+    enabled: true  # Abilita l'ingress per l'API
+    ingressClassName: "nginx"  # Nome della classe ingress
+    labels: {}  # Etichette per l'ingress
+    annotations:  # Annotazioni per l'ingress
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    tls:
+      - hosts: [minio.local]  # Host per TLS
+        secretName: minio-api-tls  # Secret per i certificati TLS
+    host: minio.local  # Nome host per l'API
+    path: /  # Percorso per l'API
+    pathType: Prefix  # Tipo di percorso
+  console:
+    enabled: true  # Abilita l'ingress per la console
+    ingressClassName: "nginx"  # Nome della classe ingress
+    labels: {}  # Etichette per l'ingress
+    annotations:  # Annotazioni per l'ingress
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    tls:
+      - hosts: [minio-console.local]  # Host per TLS
+        secretName: minio-console-tls  # Secret per i certificati TLS
+    host: minio-console.local  # Nome host per la console
+    path: /  # Percorso per la console
+    pathType: Prefix  # Tipo di percorso
+
+
+
+
+
+
+
+
+
+
+
+
+
