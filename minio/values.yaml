@@ -1,96 +1,96 @@
-tenant:
-  name: myminio
-  image:
-    repository: quay.io/minio/minio
-    tag: RELEASE.2025-04-08T15-41-24Z
-    pullPolicy: IfNotPresent
-  imagePullSecret: { }
-  initContainers: [ ]
-  scheduler: { }
-  configSecret:
-    name: myminio-env-configuration
-    accessKey: minio
-    secretKey: minio123
-  poolsMetadata:
-    annotations: { }
-    labels: { }
-  pools:
-    - servers: 4
-      name: pool-0
-      volumesPerServer: 4
-      size: 10Gi
-      storageAnnotations: { }
-      storageLabels: { }
-      annotations: { }
-      labels: { }
-      tolerations: [ ]
-      nodeSelector: { }
-      affinity: { }
-      resources: { }
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: "OnRootMismatch"
-        runAsNonRoot: true
-      containerSecurityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        allowPrivilegeEscalation: false
-        capabilities:
+tenant: # Configurazione principale del tenant MinIO
+  name: myminio # Nome del tenant MinIO
+  image: # Configurazione dell'immagine del container MinIO
+    repository: quay.io/minio/minio # Repository dell'immagine MinIO
+    tag: RELEASE.2025-04-08T15-41-24Z # Tag dell'immagine MinIO
+    pullPolicy: IfNotPresent # Politica di pull dell'immagine
+  imagePullSecret: { } # Segreti per il pull dell'immagine (se necessario)
+  initContainers: [ ] # Container di inizializzazione
+  scheduler: { } # Configurazione dello scheduler Kubernetes
+  configSecret: # Segreto Kubernetes per la configurazione di MinIO
+    name: myminio-env-configuration # Nome del segreto
+    accessKey: minio # Access key di MinIO
+    secretKey: minio123 # Secret key di MinIO
+  poolsMetadata: # Metadati per i pool di MinIO
+    annotations: { } # Annotazioni per i pod del pool
+    labels: { } # Etichette per i pod del pool
+  pools: # Configurazione dei pool di MinIO
+    - servers: 4 # Numero di server nel pool
+      name: pool-0 # Nome del pool
+      volumesPerServer: 4 # Volumi per server
+      size: 10Gi # Dimensione dei volumi
+      storageAnnotations: { } # Annotazioni per i volumi persistenti
+      storageLabels: { } # Etichette per i volumi persistenti
+      annotations: { } # Annotazioni per i pod
+      labels: { } # Etichette per i pod
+      tolerations: [ ] # Tolleranze per i pod
+      nodeSelector: { } # Selettore di nodi per i pod
+      affinity: { } # Affinità per i pod
+      resources: { } # Risorse richieste/limitate per i pod
+      securityContext: # Contesto di sicurezza per i pod
+        runAsUser: 1000 # Utente per l'esecuzione del container
+        runAsGroup: 1000 # Gruppo per l'esecuzione del container
+        fsGroup: 1000 # Gruppo del filesystem
+        fsGroupChangePolicy: "OnRootMismatch" # Politica per la modifica del gruppo del filesystem
+        runAsNonRoot: true # Richiede che il container sia eseguito come non-root
+      containerSecurityContext: # Contesto di sicurezza per il container
+        runAsUser: 1000 # Utente per l'esecuzione del container
+        runAsGroup: 1000 # Gruppo per l'esecuzione del container
+        runAsNonRoot: true # Richiede che il container sia eseguito come non-root
+        allowPrivilegeEscalation: false # Disabilita l'escalation dei privilegi
+        capabilities: # Capacità del container
           drop:
-            - ALL
-        seccompProfile:
-          type: RuntimeDefault
-      topologySpreadConstraints: [ ]
-  mountPath: /export
-  subPath: /data
-  metrics:
-    enabled: false
-    port: 9000
-    protocol: http
-  certificate:
-    externalCaCertSecret: [ ]
-    externalCertSecret: [ ]
-    requestAutoCert: true
-    certConfig: { }
-  features:
-    bucketDNS: false
-    domains: { }
-    enableSFTP: false
-  buckets: [ ]
-  users: [ ]
-  podManagementPolicy: Parallel
-  liveness: { }
-  readiness: { }
-  startup: { }
-  lifecycle: { }
-  exposeServices: { }
-  serviceAccountName: ""
-  prometheusOperator: false
-  logging: { }
-  serviceMetadata: { }
-  env: [ ]
-  priorityClassName: ""
-  additionalVolumes: [ ]
-  additionalVolumeMounts: [ ]
-ingress:
-  api:
-    enabled: false
-    ingressClassName: ""
-    labels: { }
-    annotations: { }
-    tls: [ ]
-    host: minio.local
-    path: /
-    pathType: Prefix
-  console:
-    enabled: false
-    ingressClassName: ""
-    labels: { }
-    annotations: { }
-    tls: [ ]
-    host: minio-console.local
-    path: /
-    pathType: Prefix
+            - ALL # Rimuove tutte le capacità
+        seccompProfile: # Profilo Seccomp
+          type: RuntimeDefault # Usa il profilo di runtime predefinito
+      topologySpreadConstraints: [ ] # Vincoli di distribuzione della topologia
+  mountPath: /export # Percorso di mount per i volumi
+  subPath: /data # Sottodirectory per i dati di MinIO
+  metrics: # Configurazione delle metriche Prometheus
+    enabled: false # Abilita le metriche
+    port: 9000 # Porta per le metriche
+    protocol: http # Protocollo per le metriche
+  certificate: # Configurazione dei certificati TLS
+    externalCaCertSecret: [ ] # Segreti per i certificati CA esterni
+    externalCertSecret: [ ] # Segreti per i certificati esterni
+    requestAutoCert: true # Richiesta di certificati automatici
+    certConfig: { } # Configurazione dei certificati
+  features: # Funzionalità di MinIO
+    bucketDNS: false # Abilita il DNS per i bucket
+    domains: { } # Domini personalizzati
+    enableSFTP: false # Abilita SFTP
+  buckets: [ ] # Bucket da creare
+  users: [ ] # Utenti da creare
+  podManagementPolicy: Parallel # Politica di gestione dei pod
+  liveness: { } # Probe di liveness
+  readiness: { } # Probe di readiness
+  startup: { } # Probe di startup
+  lifecycle: { } # Hook del ciclo di vita
+  exposeServices: { } # Espone i servizi MinIO
+  serviceAccountName: "" # Nome dell'account di servizio
+  prometheusOperator: false # Integrazione con Prometheus Operator
+  logging: { } # Configurazione del logging
+  serviceMetadata: { } # Metadati per i servizi
+  env: [ ] # Variabili d'ambiente per MinIO
+  priorityClassName: "" # Classe di priorità per i pod
+  additionalVolumes: [ ] # Volumi aggiuntivi
+  additionalVolumeMounts: [ ] # Mount per i volumi aggiuntivi
+ingress: # Configurazione dell'Ingress per MinIO
+  api: # Ingress per l'API MinIO
+    enabled: false # Abilita l'Ingress
+    ingressClassName: "" # Nome della classe Ingress
+    labels: { } # Etichette per l'Ingress
+    annotations: { } # Annotazioni per l'Ingress
+    tls: [ ] # Configurazione TLS per l'Ingress
+    host: minio.local # Hostname per l'Ingress
+    path: / # Percorso per l'Ingress
+    pathType: Prefix # Tipo di percorso
+  console: # Ingress per la console MinIO
+    enabled: false # Abilita l'Ingress
+    ingressClassName: "" # Nome della classe Ingress
+    labels: { } # Etichette per l'Ingress
+    annotations: { } # Annotazioni per l'Ingress
+    tls: [ ] # Configurazione TLS per l'Ingress
+    host: minio-console.local # Hostname per l'Ingress
+    path: / # Percorso per l'Ingress
+    pathType: Prefix # Tipo di percorso
