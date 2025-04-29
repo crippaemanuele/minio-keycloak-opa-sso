@@ -174,7 +174,8 @@ nodeAffinityPreset:  # Preset per l'affinità dei nodi
   values:
     - node1  # Nome del nodo preferito
 affinity: {}  # Configurazione avanzata per l'affinità (lascia vuoto se non necessario)
-nodeSelector: '' # Selettore dei nodi per la schedulazione
+nodeSelector:  # Selettore dei nodi per la schedulazione
+  disktype: ssd  # Esempio: seleziona nodi con dischi SSD
 tolerations:  # Tolleranze per la schedulazione
   - key: "keycloak"
     operator: "Exists"

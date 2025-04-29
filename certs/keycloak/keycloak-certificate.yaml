@@ -8,8 +8,8 @@ spec:
   duration: 8760h # 1 anno
   renewBefore: 720h # 30 giorni prima della scadenza
   issuerRef:
-    name: selfsigned-cluster-issuer  # Nome del ClusterIssuer self-signed
+    name: selfsigned-cluster-issuer  # Nome del ClusterIssuer
     kind: ClusterIssuer
   commonName: keycloak.local
   dnsNames:
-    - keycloak.local
+    - keycloak.local  # Nome DNS per il certificato
