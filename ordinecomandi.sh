@@ -10,3 +10,6 @@ kubectl apply -f certs/cluster-issuer.yaml
 kubectl apply -f certs/keycloak/keycloak-certificate.yaml
 #Installazione di Keycloak
 helm upgrade --install keycloak bitnami/keycloak -n keycloak -f keycloak/origin.yaml
+#Installazione di Minio
+helm upgrade --install --namespace minio-operator --create-namespace operator minio-operator/operator
+helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f old/t-values.yaml
