@@ -1,6 +1,6 @@
 #Inizializzazione del progetto
 cd Projects/minio-keycloak-sso/
-minikube start --driver=docker --cpus=8 --memory=6gb
+minikube start --driver=docker --cpus=3 --memory=6gb
 minikube addons enable ingress
 kubectl create namespace keycloak
 kubectl create namespace minio-tenant
