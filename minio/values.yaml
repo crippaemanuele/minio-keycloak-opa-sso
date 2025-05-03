@@ -116,6 +116,15 @@ tenant:
   priorityClassName: ""  # Nome della classe di priorità
   additionalVolumes: []  # Volumi aggiuntivi
   additionalVolumeMounts: []  # Mount dei volumi aggiuntivi
+  oidc:
+    enabled: true  # Abilita l'autenticazione OIDC
+    config:
+      clientId: minio-client  # ID del client OIDC registrato in Keycloak
+      clientSecret: ''  # Secret del client OIDC (da aggiornare manualmente)
+      discoveryUrl: https://keycloak.local/realms/minio-sso/.well-known/openid-configuration  # URL di discovery OIDC
+      redirectUri: https://minio-console.local/oauth/callback  # URI di redirect per la console MinIO
+      scopes: openid,profile,email  # Scopes richiesti
+      claimName: policy  # Nome del claim per identificare l'utente
 
 # Configurazione dell'ingress
 ingress:
