@@ -161,15 +161,19 @@ ingress:
   hostnameStrict: false  # Enforce strict hostname matching
   path: '{{ .Values.httpRelativePath }}'  # Path for the ingress
   servicePort: http  # Service port for the ingress
-  annotations: {}  # Annotations for the ingress
+  annotations:  # Annotations for the ingress
+    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer  # Cert-manager annotation for TLS
   labels: {}  # Labels for the ingress
-  tls: false  # Enable TLS for the ingress
+  tls: true  # Enable TLS for the ingress
   selfSigned: false  # Use self-signed certificates
   extraHosts: []  # Additional hosts for the ingress
   extraPaths: []  # Additional paths for the ingress
   extraTls: []  # Additional TLS configuration
-  secrets: []  # Secrets for TLS certificates
+  secrets: 
+    secretName: keycloak.local-tls  # Secrets for TLS certificates
   extraRules: []
+  secrets:
+  - name: keycloak.local-tls  # Nome del secret TLS
 
 adminIngress:
   enabled: false
