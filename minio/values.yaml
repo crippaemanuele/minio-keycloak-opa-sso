@@ -139,16 +139,3 @@ ingress:
     host: minio-console.local  # Nome host per la console
     path: /  # Percorso per la console
     pathType: Prefix  # Tipo di percorso
-
-
-
-
-
-
-
-
-
-
-
-
-
