@@ -1,12 +1,21 @@
+# Certificato TLS per l'API di MinIO
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: minio-api-certificate
-  namespace: minio-tenant # Assicurati che sia il namespace corretto
+  name: minio-api-cert
+  namespace: minio-tenant
+  annotations:
+    meta.helm.sh/release-name: minio
+    meta.helm.sh/release-namespace: minio-tenant
+  labels:
+    app.kubernetes.io/managed-by: Helm
 spec:
-  secretName: minio-api-tls-secret
+  secretName: minio-api.local-tls  # Nome del secret che conterrà i certificati
+  duration: 8760h # 1 anno
+  renewBefore: 720h # 30 giorni prima della scadenza
   issuerRef:
-    name: selfsigned-issuer
+    name: selfsigned-cluster-issuer  # Nome del ClusterIssuer
     kind: ClusterIssuer
+  commonName: minio-api.local  # Nome comune per il certificato
   dnsNames:
-  - minio-api.local
+    - minio-api.local  # Nome DNS per il certificato

@@ -1,12 +1,21 @@
+# Certificato TLS per la console di MinIO
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: minio-console-certificate
-  namespace: minio-tenant # Assicurati che sia il namespace corretto
+  name: minio-console-cert
+  namespace: minio-tenant
+  annotations:
+    meta.helm.sh/release-name: minio
+    meta.helm.sh/release-namespace: minio-tenant
+  labels:
+    app.kubernetes.io/managed-by: Helm
 spec:
-  secretName: minio-console-tls-secret
+  secretName: minio-console.local-tls  # Nome del secret che conterrà i certificati
+  duration: 8760h # 1 anno
+  renewBefore: 720h # 30 giorni prima della scadenza
   issuerRef:
-    name: selfsigned-issuer
+    name: selfsigned-cluster-issuer  # Nome del ClusterIssuer
     kind: ClusterIssuer
+  commonName: minio-console.local  # Nome comune per il certificato
   dnsNames:
-  - minio-console.local
+    - minio-console.local  # Nome DNS per il certificato

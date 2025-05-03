@@ -120,11 +120,12 @@ ingress:
     ingressClassName: "nginx"  # Nome della classe ingress
     labels: {}  # Etichette per l'ingress
     annotations:  # Annotazioni per l'ingress
+      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer  # Cert-manager annotation for TLS
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     tls:
-      - hosts: [minio.local]  # Host per TLS
-        secretName: minio-api-tls  # Secret per i certificati TLS
-    host: minio.local  # Nome host per l'API
+      - hosts: [minio-api.local]  # Host per TLS
+        secretName: minio-api.local-tls  # Secret per i certificati TLS
+    host: minio-api.local  # Nome host per l'API
     path: /  # Percorso per l'API
     pathType: Prefix  # Tipo di percorso
   console:
@@ -132,10 +133,11 @@ ingress:
     ingressClassName: "nginx"  # Nome della classe ingress
     labels: {}  # Etichette per l'ingress
     annotations:  # Annotazioni per l'ingress
+      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer  # Cert-manager annotation for TLS
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     tls:
       - hosts: [minio-console.local]  # Host per TLS
-        secretName: minio-console-tls  # Secret per i certificati TLS
+        secretName: minio-console.local-tls  # Secret per i certificati TLS
     host: minio-console.local  # Nome host per la console
     path: /  # Percorso per la console
     pathType: Prefix  # Tipo di percorso
