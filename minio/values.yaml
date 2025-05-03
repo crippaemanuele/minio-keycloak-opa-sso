@@ -94,7 +94,11 @@ tenant:
   buckets:
     - name: referti-clinica  # Nome del bucket
 
-  users: []  # Elenco degli utenti (vuoto di default)
+  users:
+    - name: minioadmin  # Nome dell'utente amministrativo aggiuntivo
+      accessKey: minioadmin  # Chiave di accesso
+      secretKey: minioadmin  # Chiave segreta
+      policy: "consoleAdmin"  # Politica associata (amministratore)
 
   podManagementPolicy: Parallel  # Politica di gestione dei pod
 
