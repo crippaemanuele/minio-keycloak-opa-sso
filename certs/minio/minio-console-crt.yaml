@@ -4,6 +4,11 @@ kind: Certificate
 metadata:
   name: minio-console-cert
   namespace: minio-tenant
+  annotations:
+    meta.helm.sh/release-name: minio
+    meta.helm.sh/release-namespace: minio-tenant
+  labels:
+    app.kubernetes.io/managed-by: Helm
 spec:
   secretName: minio-console.local-tls  # Nome del secret che conterrà i certificati
   duration: 8760h # 1 anno
@@ -14,9 +19,3 @@ spec:
   commonName: minio-console.local  # Nome comune per il certificato
   dnsNames:
     - minio-console.local  # Nome DNS per il certificato
-  secretTemplate:
-    annotations:
-      meta.helm.sh/release-name: minio
-      meta.helm.sh/release-namespace: minio-tenant
-    labels:
-      app.kubernetes.io/managed-by: Helm

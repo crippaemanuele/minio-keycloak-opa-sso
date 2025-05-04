@@ -49,8 +49,6 @@ image:
   pullPolicy: IfNotPresent  # Politica di pull dell'immagine
   pullSecrets: []  # Segreti per il pull dell'immagine
   debug: false  # Abilita la modalità debug per il container
-  volumes:
-    - /home/lelec/Projects/minio-keycloak-sso/keycloak/realm-export.json  # Realm
 
 # Configurazione dell'autenticazione
 auth:

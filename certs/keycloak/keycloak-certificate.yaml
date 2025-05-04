@@ -3,6 +3,11 @@ kind: Certificate
 metadata:
   name: keycloak.local-cert
   namespace: keycloak
+  annotations:
+    meta.helm.sh/release-name: keycloak
+    meta.helm.sh/release-namespace: keycloak
+  labels:
+    app.kubernetes.io/managed-by: Helm
 spec:
   secretName: keycloak.local-tls  # Nome del secret che conterrà i certificati
   duration: 8760h # 1 anno
@@ -13,9 +18,3 @@ spec:
   commonName: keycloak.local
   dnsNames:
     - keycloak.local  # Nome DNS per il certificato
-  secretTemplate:
-    annotations:
-      meta.helm.sh/release-name: keycloak
-      meta.helm.sh/release-namespace: keycloak
-    labels:
-      app.kubernetes.io/managed-by: Helm
