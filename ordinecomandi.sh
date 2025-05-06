@@ -5,7 +5,7 @@ minikube addons enable ingress
 kubectl create namespace keycloak
 kubectl create namespace minio-tenant
 #Inizializzazione cert-manager
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true
+helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true
 #Creazione del cluster issuer e dei certificati
 kubectl apply -f certs/cluster-issuer.yaml
 kubectl apply -f certs/keycloak/keycloak-certificate.yaml
