@@ -91,11 +91,14 @@ tenant:
     enableSFTP: false  # Abilita il supporto SFTP
 
   # Configurazione dei bucket
-  buckets:
-    - name: referti-clinica  # Nome del bucket
+  buckets: []
 
-  users: []  # Elenco degli utenti (vuoto di default)
-
+  users: 
+    - name: minio-user  # Nome dell'utente
+      accessKey: minioadmin  # Chiave di accesso
+      secretKey: minioadmin  # Chiave segreta
+      policy: consoleAdmin  # Politica dell'utente
+      
   podManagementPolicy: Parallel  # Politica di gestione dei pod
 
   liveness: {}  # Configurazione del probe di liveness
