@@ -273,11 +273,11 @@ service:
     extraPorts: []
 
 # ===========================
-# Ingress Keycloak (disabilitato)
+# Ingress Keycloak
 # ===========================
 ingress:
-  enabled: false
-  ingressClassName: ""
+  enabled: true  # Abilita l'Ingress
+  ingressClassName: nginx
   pathType: ImplementationSpecific
   apiVersion: ""
   controller: default
@@ -415,63 +415,34 @@ metrics:
 # Config CLI (import config Realm)
 # ===========================
 keycloakConfigCli:
-  enabled: false
+  enabled: true  # Abilita il container keycloak-config-cli
   image:
-    registry: docker.io
-    repository: bitnami/keycloak-config-cli
-    tag: 6.4.0-debian-12-r5
-    digest: ""
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-  annotations:
-    helm.sh/hook: "post-install,post-upgrade,post-rollback"
-    helm.sh/hook-delete-policy: "hook-succeeded,before-hook-creation"
-    helm.sh/hook-weight: "5"
-  command: []
-  args: []
-  automountServiceAccountToken: true
-  hostAliases: []
-  resourcesPreset: "small"
-  resources: {}
-  containerSecurityContext:
-    enabled: true
-    seLinuxOptions: {}
-    runAsUser: 1001
-    runAsGroup: 1001
-    runAsNonRoot: true
-    privileged: false
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop: ["ALL"]
-    seccompProfile:
-      type: "RuntimeDefault"
-  podSecurityContext:
-    enabled: true
-    fsGroupChangePolicy: Always
-    sysctls: []
-    supplementalGroups: []
-    fsGroup: 1001
-  backoffLimit: 1
-  podLabels: {}
-  podAnnotations: {}
-  nodeSelector: {}
-  podTolerations: []
-  availabilityCheck:
-    enabled: true
-    timeout: ""
-  extraEnvVars: []
-  extraEnvVarsCM: ""
-  extraEnvVarsSecret: ""
-  extraVolumes: []
-  extraVolumeMounts: []
-  initContainers: []
-  sidecars: []
-  configuration: {}
-  existingConfigmap: ""
-  cleanupAfterFinished:
-    enabled: false
-    seconds: 600
+    registry: docker.io  # Registry Docker
+    repository: bitnami/keycloak-config-cli  # Repository dell'immagine keycloak-config-cli
+    tag: 6.4.0-debian-12-r5  # Tag dell'immagine
+    pullPolicy: IfNotPresent  # Politica di pull dell'immagine
+  args:
+    - --import.files.locations=/config/realm-export.json  # Percorso del file JSON da importare
+  extraEnvVars:
+    - name: KEYCLOAK_USER
+      valueFrom:
+        secretKeyRef:
+          name: keycloak  # Nome del Secret con le credenziali admin
+          key: keycloakadmin
+    - name: KEYCLOAK_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: keycloak  # Nome del Secret con le credenziali admin
+          key: keycloakadmin
+  extraVolumes:
+    - name: realm-config  # Nome del volume per il file del realm
+      configMap:
+        name: keycloak-realm-config  # Nome della ConfigMap contenente il file JSON
+  extraVolumeMounts:
+    - name: realm-config
+      mountPath: /config  # Percorso in cui montare il file JSON
+  podAnnotations: {}  # Annotazioni per il pod
+  podLabels: {}  # Etichette per il pod
 
 # ===========================
 # Database interno PostgreSQL
