@@ -21,8 +21,8 @@ tenant:
   # Secret per le credenziali MinIO
   configSecret:
     name: minio-env-configuration  # Nome del secret
-    accessKey: minio # Chiave di accesso per MinIO
-    secretKey: minio123  # Chiave segreta per MinIO
+    accessKey: minioadmin # Chiave di accesso per MinIO
+    secretKey: minioadmin  # Chiave segreta per MinIO
 
   # Metadati per i pool di storage
   poolsMetadata:
