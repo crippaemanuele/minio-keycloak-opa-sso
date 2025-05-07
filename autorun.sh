@@ -17,4 +17,4 @@ helm upgrade --install keycloak bitnami/keycloak -n keycloak -f keycloak/values.
 kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d && echo
 #Installazione di Minio
 helm upgrade --install --namespace minio-operator --create-namespace operator minio-operator/operator
-helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f old/t-values.yaml
+helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f minio/values.yaml
