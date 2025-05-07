@@ -91,10 +91,11 @@ tenant:
     enableSFTP: false  # Abilita il supporto SFTP
 
   # Configurazione dei bucket
-  buckets: []
+  buckets:
+    - name: referti-clinica  # Nome del bucket
 
-  users: []  # Elenco degli utenti
-      
+  users: []  # Elenco degli utenti (vuoto di default)
+
   podManagementPolicy: Parallel  # Politica di gestione dei pod
 
   liveness: {}  # Configurazione del probe di liveness
