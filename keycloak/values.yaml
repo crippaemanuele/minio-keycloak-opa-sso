@@ -423,17 +423,7 @@ keycloakConfigCli:
     pullPolicy: IfNotPresent  # Politica di pull dell'immagine
   args:
     - --import.files.locations=/config/realm-export.json  # Percorso del file JSON da importare
-  extraEnvVars:
-    - name: KEYCLOAK_USER
-      valueFrom:
-        secretKeyRef:
-          name: keycloak  # Nome del Secret con le credenziali admin
-          key: keycloakadmin
-    - name: KEYCLOAK_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: keycloak  # Nome del Secret con le credenziali admin
-          key: keycloakadmin
+  extraEnvVars: []
   extraVolumes:
     - name: realm-config  # Nome del volume per il file del realm
       configMap:
