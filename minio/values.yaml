@@ -93,11 +93,7 @@ tenant:
   # Configurazione dei bucket
   buckets: []
 
-  users: 
-    - name: minio-user  # Nome dell'utente
-      accessKey: minioadmin  # Chiave di accesso
-      secretKey: minioadmin  # Chiave segreta
-      policy: consoleAdmin  # Politica dell'utente
+  users: []  # Elenco degli utenti
       
   podManagementPolicy: Parallel  # Politica di gestione dei pod
 
