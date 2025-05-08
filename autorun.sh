@@ -14,7 +14,8 @@ kubectl apply -f certs/minio/minio-console-crt.yaml
 #Installazione di Keycloak
 #kubectl create configmap keycloak-realm-config --from-file=realm-export.json=/home/lelec/Projects/minio-keycloak-sso/keycloak/realm-export.json -n keycloak
 helm upgrade --install keycloak bitnami/keycloak -n keycloak -f keycloak/values.yaml
-kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d && echo
+KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d)
+echo $KEYCLOAK_PASSWORD
 #Installazione di Minio
 helm upgrade --install --namespace minio-operator --create-namespace operator minio-operator/operator
 helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f minio/values.yaml
