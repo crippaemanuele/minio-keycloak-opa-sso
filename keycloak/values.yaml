@@ -172,7 +172,7 @@ ingress:
   secrets: 
     secretName: keycloak.local-tls  # Secrets for TLS certificates
   extraRules: []
-  secrets:
+  extraSecrets:
   - name: keycloak.local-tls  # Nome del secret TLS
 
 adminIngress:
