@@ -12,6 +12,8 @@ kubectl apply -f certs/keycloak/keycloak-certificate.yaml
 kubectl apply -f certs/minio/minio-api-crt.yaml
 kubectl apply -f certs/minio/minio-console-crt.yaml
 #Installazione di Keycloak
+jq 'del(.verifiableCredentialsEnabled)' /home/lelec/Projects/minio-keycloak-sso/keycloak/realm-export.json > /home/lelec/Projects/minio-keycloak-sso/keycloak/realm-export-cleaned.json
+kubectl -n keycloak create secret generic realm-secret --from-file=realm-export.json=/home/lelec/Projects/minio-keycloak-sso/keycloak/realm-export.json
 #kubectl create configmap keycloak-realm-config --from-file=realm-export.json=/home/lelec/Projects/minio-keycloak-sso/keycloak/realm-export.json -n keycloak
 helm upgrade --install keycloak bitnami/keycloak -n keycloak -f keycloak/values.yaml
 KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d)

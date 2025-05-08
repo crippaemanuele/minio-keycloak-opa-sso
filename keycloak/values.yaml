@@ -274,61 +274,22 @@ metrics:
     labels: {}
     groups: []
 keycloakConfigCli:
-  enabled: false
+  enabled: true  # Abilita il container keycloak-config-cli
   image:
     registry: docker.io
     repository: bitnami/keycloak-config-cli
     tag: 6.4.0-debian-12-r1
-    digest: ''
     pullPolicy: IfNotPresent
-    pullSecrets: []
-  annotations:
-    helm.sh/hook: 'post-install,post-upgrade,post-rollback'
-    helm.sh/hook-delete-policy: 'hook-succeeded,before-hook-creation'
-    helm.sh/hook-weight: '5'
-  command: []
-  args: []
-  automountServiceAccountToken: true
-  hostAliases: []
-  resourcesPreset: small
-  resources: {}
-  containerSecurityContext:
-    enabled: true
-    seLinuxOptions: {}
-    runAsUser: 1001
-    runAsGroup: 1001
-    runAsNonRoot: true
-    privileged: false
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    seccompProfile:
-      type: RuntimeDefault
-  podSecurityContext:
-    enabled: true
-    fsGroupChangePolicy: Always
-    sysctls: []
-    supplementalGroups: []
-    fsGroup: 1001
-  backoffLimit: 1
-  podLabels: {}
-  podAnnotations: {}
-  nodeSelector: {}
-  podTolerations: []
-  extraEnvVars: []
-  extraEnvVarsCM: ''
-  extraEnvVarsSecret: ''
-  extraVolumes: []
-  extraVolumeMounts: []
-  initContainers: []
-  sidecars: []
-  configuration: {}
-  existingConfigmap: ''
-  cleanupAfterFinished:
-    enabled: false
-    seconds: 600
+  args:
+    - --import.files.locations=/config/realm-export.json  # Percorso del file JSON da importare
+  extraVolumes:
+    - name: realm-secret
+      secret:
+        secretName: realm-secret  # Nome del Secret contenente il file JSON
+  extraVolumeMounts:
+    - name: realm-secret
+      mountPath: /config  # Percorso in cui montare il file JSON
+      readOnly: true
 postgresql:
   enabled: true  # Enable PostgreSQL
   auth:
