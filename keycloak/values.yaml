@@ -169,10 +169,8 @@ ingress:
   extraHosts: []  # Additional hosts for the ingress
   extraPaths: []  # Additional paths for the ingress
   extraTls: []  # Additional TLS configuration
-  secrets: 
-    secretName: keycloak.local-tls  # Secrets for TLS certificates
   extraRules: []
-  extraSecrets:
+  secrets:
   - name: keycloak.local-tls  # Nome del secret TLS
 
 adminIngress:
@@ -278,7 +276,7 @@ keycloakConfigCli:
   image:
     registry: docker.io
     repository: bitnami/keycloak-config-cli
-    tag: 6.4.0-debian-12-r1
+    tag: 6.5.0-debian-12-r0  # Aggiornato alla versione più recente
     pullPolicy: IfNotPresent
   args:
     - --import.files.locations=/config/realm-export.json  # Percorso del file JSON da importare
