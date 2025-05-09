@@ -22,7 +22,7 @@ installa_cert_manager() {
 # Funzione per l'installazione di Keycloak
 installa_keycloak() {
   echo "Installazione di Keycloak..."
-  helm upgrade --install keycloak bitnami/keycloak -n keycloak -f keycloak/values.yaml
+  helm upgrade --install keycloak bitnami/keycloak --namespace keycloak --create-namespace -f keycloak/values.yaml
   sleep 30
   KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d)
   echo "Password di Keycloak: $KEYCLOAK_PASSWORD"
@@ -32,11 +32,12 @@ installa_keycloak() {
 installa_minio() {
   echo "Installazione di Minio..."
   helm upgrade --install --namespace minio-operator --create-namespace operator minio-operator/operator
-  helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f minio/values.yaml
+  sleep 5
+  helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f old/t-values.yaml
 }
 
 # Chiamata delle funzioni in sequenza
 inizializzazione
-installa_cert_manager
+#installa_cert_manager
 #installa_keycloak
 installa_minio
