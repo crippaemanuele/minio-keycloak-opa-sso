@@ -272,33 +272,66 @@ metrics:
     labels: {}
     groups: []
 keycloakConfigCli:
-  enabled: true  # Abilita il container keycloak-config-cli
+  enabled: true
   image:
     registry: docker.io
     repository: bitnami/keycloak-config-cli
-    tag: 6.5.0-debian-12-r0  # Aggiornato alla versione più recente
-    pullPolicy: IfNotPresent
+    tag: 6.4.0-debian-12-r5
   args:
-    - --import.files.locations=/config/realm-export.json  # Percorso del file JSON da importare
+    - --keycloak.wait-for=120
+    - --import.files.locations=/config/realm-export.json
   extraVolumes:
     - name: realm-secret
       secret:
-        secretName: realm-secret  # Nome del Secret contenente il file JSON
+        secretName: realm-secret
   extraVolumeMounts:
     - name: realm-secret
-      mountPath: /config  # Percorso in cui montare il file JSON
+      mountPath: /config
       readOnly: true
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+  initContainers:
+    - name: wait-for-keycloak
+      image: curlimages/curl:7.88.1  # Immagine leggera per eseguire richieste HTTP
+      command:
+        - sh
+        - -c
+        - |
+          until curl -sSf http://keycloak.local/auth/realms/master; do
+            echo "Waiting for Keycloak to be ready...";
+            sleep 5;
+          done;
+      env:
+        - name: KEYCLOAK_HOST
+          value: keycloak  # Nome del servizio Keycloak
+        - name: KEYCLOAK_PORT
+          value: "8080"  # Porta del servizio Keycloak
 postgresql:
   enabled: true  # Enable PostgreSQL
   auth:
-    postgresPassword: ''  # Password for the PostgreSQL superuser
+    postgresPassword: ''  # Password per il superuser
     username: bn_keycloak  # Username for the Keycloak database
-    password: ''  # Password for the Keycloak database
+    password: ''  # Password per il database Keycloak
     database: bitnami_keycloak  # Name of the Keycloak database
-    existingSecret: ''  # Secret containing PostgreSQL credentials
-    secretKeys:
-      userPasswordKey: password  # Key for the user password in the secret
-  architecture: standalone  # Deployment architecture for PostgreSQL
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
 
 # External database configuration
 externalDatabase:
