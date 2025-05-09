@@ -274,32 +274,7 @@ metrics:
 keycloakConfigCli:
   enabled: true
   configuration: 
-    example-realm.json: |
-      {
-        "realm": "example-realm",
-        "enabled": true,
-        "registrationAllowed": true,
-        "users": [
-          {
-            "username": "basicuser",
-            "email": "basicuser@example.com",
-            "enabled": true,
-            "firstName": "Basic",
-            "lastName": "User",
-            "credentials": [
-              {
-                "type": "password",
-                "value": "basicpassword"
-              }
-            ]
-          }
-        ],
-        "groups": [
-          {
-            "name": "basicgroup"
-          }
-        ]
-      }
+    
   
 postgresql:
   enabled: true  # Enable PostgreSQL
