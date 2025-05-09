@@ -21,8 +21,8 @@ tenant:
   # Secret per le credenziali MinIO
   configSecret:
     name: minio-env-configuration  # Nome del secret
-    accessKey: minioadmin # Chiave di accesso per MinIO
-    secretKey: minioadmin  # Chiave segreta per MinIO
+    accessKey: minio # Chiave di accesso per MinIO
+    secretKey: minio123 # Chiave segreta per MinIO
 
   # Metadati per i pool di storage
   poolsMetadata:
@@ -92,7 +92,7 @@ tenant:
 
   # Configurazione dei bucket
   buckets:
-    - name: referti-clinica  # Nome del bucket
+    - name: documenti  # Nome del bucket
 
   users: []  # Elenco degli utenti (vuoto di default)
 
