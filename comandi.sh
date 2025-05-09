@@ -40,5 +40,5 @@ installa_minio() {
 # Chiamata delle funzioni in sequenza
 inizializzazione
 installa_cert_manager
-#installa_keycloak
+installa_keycloak
 installa_minio

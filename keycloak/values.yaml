@@ -273,51 +273,34 @@ metrics:
     groups: []
 keycloakConfigCli:
   enabled: true
-  image:
-    registry: docker.io
-    repository: bitnami/keycloak-config-cli
-    tag: 6.4.0-debian-12-r5
-  args:
-    - --keycloak.wait-for=120
-    - --import.files.locations=/config/realm-export.json
-  extraVolumes:
-    - name: realm-secret
-      secret:
-        secretName: realm-secret
-  extraVolumeMounts:
-    - name: realm-secret
-      mountPath: /config
-      readOnly: true
-  livenessProbe:
-    enabled: true
-    initialDelaySeconds: 60
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-    successThreshold: 1
-  readinessProbe:
-    enabled: true
-    initialDelaySeconds: 60
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-    successThreshold: 1
-  initContainers:
-    - name: wait-for-keycloak
-      image: curlimages/curl:7.88.1  # Immagine leggera per eseguire richieste HTTP
-      command:
-        - sh
-        - -c
-        - |
-          until curl -sSf http://keycloak.local/auth/realms/master; do
-            echo "Waiting for Keycloak to be ready...";
-            sleep 5;
-          done;
-      env:
-        - name: KEYCLOAK_HOST
-          value: keycloak  # Nome del servizio Keycloak
-        - name: KEYCLOAK_PORT
-          value: "8080"  # Porta del servizio Keycloak
+  configuration: 
+    example-realm.json: |
+      {
+        "realm": "example-realm",
+        "enabled": true,
+        "registrationAllowed": true,
+        "users": [
+          {
+            "username": "basicuser",
+            "email": "basicuser@example.com",
+            "enabled": true,
+            "firstName": "Basic",
+            "lastName": "User",
+            "credentials": [
+              {
+                "type": "password",
+                "value": "basicpassword"
+              }
+            ]
+          }
+        ],
+        "groups": [
+          {
+            "name": "basicgroup"
+          }
+        ]
+      }
+  
 postgresql:
   enabled: true  # Enable PostgreSQL
   auth:
