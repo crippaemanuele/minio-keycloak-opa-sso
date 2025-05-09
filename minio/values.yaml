@@ -18,11 +18,11 @@ tenant:
   configuration:
     name: minio-env-configuration  # Nome del ConfigMap per le variabili di ambiente
 
-  # Secret per le credenziali MinIO
+# Secret per le credenziali MinIO
   configSecret:
     name: minio-env-configuration  # Nome del secret
-    accessKey: minio # Chiave di accesso per MinIO
-    secretKey: minio123 # Chiave segreta per MinIO
+    accessKey: minio  # Chiave di accesso per MinIO
+    secretKey: minio123  # Chiave segreta per MinIO
 
   # Metadati per i pool di storage
   poolsMetadata:
@@ -94,7 +94,8 @@ tenant:
   buckets:
     - name: documenti  # Nome del bucket
 
-  users: []  # Elenco degli utenti (vuoto di default)
+  users: #Utenze MinIO
+    - name: minio-admin 
 
   podManagementPolicy: Parallel  # Politica di gestione dei pod
 

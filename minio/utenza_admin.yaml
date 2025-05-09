@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: minio-admin
+  namespace: minio-tenant
+type: Opaque
+stringData:
+  CONSOLE_ACCESS_KEY: minioadmin
+  CONSOLE_SECRET_KEY: minioadmin

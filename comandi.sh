@@ -33,11 +33,12 @@ installa_minio() {
   echo "Installazione di Minio..."
   helm upgrade --install --namespace minio-operator --create-namespace operator minio-operator/operator
   sleep 5
-  helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f old/t-values.yaml
+  kubectl apply -f minio/utenza_admin.yaml
+  helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f minio/values.yaml
 }
 
 # Chiamata delle funzioni in sequenza
 inizializzazione
-#installa_cert_manager
+installa_cert_manager
 #installa_keycloak
 installa_minio
