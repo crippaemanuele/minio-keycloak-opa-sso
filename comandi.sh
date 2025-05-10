@@ -5,6 +5,7 @@ inizializzazione() {
   minikube start --driver=docker --cpus=3 --memory=6gb
   minikube addons enable ingress
   kubectl create namespace minio-tenant
+  kubectl create namespace keycloak
   sleep 10
 }
 

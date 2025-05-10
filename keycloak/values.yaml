@@ -274,8 +274,169 @@ metrics:
 keycloakConfigCli:
   enabled: true
   configuration:
-    existingConfigmap: realm-export
-  backoffLimit: 5  # Aumenta il limite di tentativi (default è 1)
+    minio-realm.json: |
+      {
+        "realm":"MinIO",
+        "enabled":true,
+        "registrationAllowed":true,
+        "groups": [ 
+        {
+          "name": "consoleAdmins",
+          "path": "/consoleAdmins",
+          "subGroups": [],
+          "attributes": {
+            "policy": [
+              "consoleAdmin"
+            ]
+          },
+          "realmRoles": [],
+          "clientRoles": {}
+        },
+        {
+            "name": "leggiScrittori",
+            "path": "/leggiScrittori",
+            "subGroups": [],
+            "attributes": {
+              "policy": [
+                "readwrite"
+              ]
+            },
+            "realmRoles": [],
+            "clientRoles": {}
+          }
+        ],
+        "clients": [
+            {
+                "id": "bc2f33a1-9f15-4a1b-9eb8-ea9fcca931b1",
+                "clientId": "minio-client",
+                "name": "MinIO SSO Client",
+                "description": "",
+                "rootUrl": "${authBaseUrl}",
+                "adminUrl": "https://minio.local",
+                "baseUrl": "/realms/minio-sso/account/",
+                "surrogateAuthRequired": false,
+                "enabled": true,
+                "alwaysDisplayInConsole": true,
+                "clientAuthenticatorType": "client-secret",
+                "secret": "**********",
+                "redirectUris": [
+                  "https://minio-console.local/oauth_callback"
+                ],
+                "webOrigins": [
+                  "https://minio-console.local"
+                ],
+                "notBefore": 0,
+                "bearerOnly": false,
+                "consentRequired": false,
+                "standardFlowEnabled": true,
+                "implicitFlowEnabled": false,
+                "directAccessGrantsEnabled": true,
+                "serviceAccountsEnabled": false,
+                "publicClient": false,
+                "frontchannelLogout": false,
+                "protocol": "openid-connect",
+                "attributes": {
+                  "realm_client": "false",
+                  "oidc.ciba.grant.enabled": "false",
+                  "client.secret.creation.time": "1746093202",
+                  "backchannel.logout.session.required": "true",
+                  "display.on.consent.screen": "false",
+                  "oauth2.device.authorization.grant.enabled": "false",
+                  "use.jwks.url": "true",
+                  "backchannel.logout.revoke.offline.tokens": "false"
+                },
+                "authenticationFlowBindingOverrides": {},
+                "fullScopeAllowed": true,
+                "nodeReRegistrationTimeout": -1,
+                "defaultClientScopes": [
+                  "web-origins",
+                  "acr",
+                  "profile",
+                  "roles",
+                  "minio-authorization",
+                  "basic",
+                  "email"
+                ],
+                "optionalClientScopes": [
+                  "address",
+                  "phone",
+                  "organization",
+                  "offline_access",
+                  "microprofile-jwt"
+                ]
+            }
+        ],
+        "clientScopes": [
+            {
+                "id": "bc0581a3-8553-4961-a688-1f2acf747ec1",
+                "name": "minio-authorization",
+                "description": "",
+                "protocol": "openid-connect",
+                "attributes": {
+                  "include.in.token.scope": "true",
+                  "display.on.consent.screen": "true",
+                  "gui.order": "",
+                  "consent.screen.text": ""
+                },
+                "protocolMappers": [
+                  {
+                    "id": "18a6079b-68d6-4b76-8d75-ee476cf21159",
+                    "name": "minio-mapper",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-usermodel-attribute-mapper",
+                    "consentRequired": false,
+                    "config": {
+                      "aggregate.attrs": "true",
+                      "introspection.token.claim": "true",
+                      "multivalued": "true",
+                      "userinfo.token.claim": "true",
+                      "user.attribute": "policy",
+                      "id.token.claim": "true",
+                      "lightweight.claim": "false",
+                      "access.token.claim": "true",
+                      "claim.name": "policy",
+                      "jsonType.label": "String"
+                    }
+                  }
+                ]
+            }
+        ],
+        "users":[  
+           {
+              "username":"amministratore",
+              "email":"",
+              "enabled":true,
+              "firstName":"Amministratore",
+              "lastName":"Amministratore",
+              "credentials":[
+                 {
+                    "type":"password",
+                    "value":"aministratore_pass"
+                 }
+              ],
+              "groups":[
+                 "/consoleAdmins"
+              ]
+           },
+           {
+              "username":"utente",
+              "email":"",
+              "enabled":true,
+              "firstName":"Utente",
+              "lastName":"Utente",
+              "credentials":[
+                 {
+                    "type":"password",
+                    "value":"utente_pass"
+                 }
+              ],
+              "groups":[
+                 "/leggiScrittori"
+              ]
+           }
+        ]
+      }
+  backoffLimit: 8  # Aumenta il limite di tentativi (default è 1)
   extraStartupArgs: "--wait-for-keycloak"  # Esempio di argomento per attendere Keycloak
   
 postgresql:
