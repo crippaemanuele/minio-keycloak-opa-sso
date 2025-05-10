@@ -273,8 +273,10 @@ metrics:
     groups: []
 keycloakConfigCli:
   enabled: true
-  configuration: 
-    
+  configuration:
+    existingConfigmap: realm-export
+  backoffLimit: 5  # Aumenta il limite di tentativi (default è 1)
+  extraStartupArgs: "--wait-for-keycloak"  # Esempio di argomento per attendere Keycloak
   
 postgresql:
   enabled: true  # Enable PostgreSQL

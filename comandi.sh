@@ -22,6 +22,7 @@ installa_cert_manager() {
 # Funzione per l'installazione di Keycloak
 installa_keycloak() {
   echo "Installazione di Keycloak..."
+  kubectl create configmap realm-export --from-file=keycloak/realm-export.json --namespace keycloak
   helm upgrade --install keycloak bitnami/keycloak --namespace keycloak --create-namespace -f keycloak/values.yaml
   sleep 30
   KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d)
