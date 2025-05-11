@@ -130,7 +130,7 @@ ingress:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     tls:
       - hosts: [minio-api.local]  # Host per TLS
-        secretName: minio-tls  # Secret per i certificati TLS
+        secretName: minio-api.local-tls  # Secret per i certificati TLS
     host: minio-api.local  # Nome host per l'API
     path: /  # Percorso per l'API
     pathType: Prefix  # Tipo di percorso
@@ -143,19 +143,19 @@ ingress:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     tls:
       - hosts: [minio-console.local]  # Host per TLS
-        secretName: minio-tls  # Secret per i certificati TLS
+        secretName: minio-console.local-tls  # Secret per i certificati TLS
     host: minio-console.local  # Nome host per la console
     path: /  # Percorso per la console
     pathType: Prefix  # Tipo di percorso
 
 # Configurazione OIDC per Keycloak
-oidc:
-  enabled: true  # Abilita l'autenticazione OIDC
-  config:
-    url: https://keycloak.local/auth/realms/minio-sso  # URL del realm di Keycloak
-    clientId: minio-client  # ID del client configurato in Keycloak
-    clientSecret: <client-secret>  # Secret del client configurato in Keycloak
-    claimName: policy  # Nome del claim da utilizzare per l'identità
-    scopes: "openid,profile,email"  # Scopes richiesti
-    jwks:
-      url: https://keycloak.local/auth/realms/minio-sso/protocol/openid-connect/certs  # URL per ottenere le chiavi pubbliche JWKS
+#oidc:
+#  enabled: true  # Abilita l'autenticazione OIDC
+#  config:
+#    url: https://keycloak.local/auth/realms/minio-sso  # URL del realm di Keycloak
+#    clientId: minio-client  # ID del client configurato in Keycloak
+#    clientSecret: <client-secret>  # Secret del client configurato in Keycloak
+#    claimName: policy  # Nome del claim da utilizzare per l'identità
+#    scopes: "openid,profile,email"  # Scopes richiesti
+#    jwks:
+#      url: https://keycloak.local/auth/realms/minio-sso/protocol/openid-connect/certs  # URL per ottenere le chiavi pubbliche JWKS
