@@ -23,7 +23,7 @@ installa_cert_manager() {
   kubectl apply -f certs/minio/sts-tls-certificate.yaml  # Configura il certificato TLS per il servizio STS di MinIO
   kubectl apply -f certs/minio/tenant-ca-certificate.yaml  # Configura il certificato CA per il tenant MinIO
   kubectl apply -f certs/minio/tenant-ca-issuer.yaml  # Crea l'Issuer per il tenant MinIO basato sul certificato CA
-  kubectl apply -f tenant-minio-certificate.yaml  # Configura il certificato TLS per il tenant MinIO
+  kubectl apply -f certs/minio/tenant-minio-certificate.yaml  # Configura il certificato TLS per il tenant MinIO
   kubectl apply -f certs/minio/minio-api-crt.yaml  # Configura il certificato TLS per l'API di MinIO
   kubectl apply -f certs/minio/minio-console-crt.yaml  # Configura il certificato TLS per la console di MinIO
   kubectl get secrets -n minio-tenant tenant-ca-tls -o=jsonpath='{.data.ca\.crt}' | base64 -d > ca.crt  # Estrae il certificato CA del tenant e lo salva in un file
@@ -42,11 +42,10 @@ installa_keycloak() {
 # Funzione per l'installazione di Minio
 installa_minio() {
   echo "Installazione di Minio..."
-  helm upgrade --install --namespace minio-operator --create-namespace operator minio-operator/operator
-  kubectl apply -k minio-operator
+  helm upgrade --install operator minio-operator/operator --namespace minio-operator --create-namespace -f minio/o-values.yaml
   sleep 5
   kubectl apply -f minio/utenza_admin.yaml
-  helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f minio/values.yaml
+  helm upgrade --install minio minio-operator/tenant --namespace minio-tenant --create-namespace -f minio/t-values.yaml
 }
 
 # Chiamata delle funzioni in sequenza
