@@ -16,8 +16,11 @@ installa_cert_manager() {
   sleep 10
   echo "Creazione del cluster issuer e dei certificati..."
   kubectl apply -f certs/cluster-issuer.yaml
+  kubectl apply -f certs/root-ca.yaml
   kubectl apply -f certs/minio/minio-api-crt.yaml
   kubectl apply -f certs/minio/minio-console-crt.yaml
+  kubectl get secret root-ca-secret -n cert-manager -o jsonpath='{.data.ca\.crt}' | base64 -d > certs/root-ca.crt
+  kubectl create secret generic keycloak-ca-secret --from-file=ca.crt=certs/root-ca.crt -n minio-tenant
 }
 
 # Funzione per l'installazione di Keycloak

@@ -79,7 +79,8 @@ tenant:
 
   # Configurazione dei certificati
   certificate:
-    externalCaCertSecret: []  # Secret per il certificato CA esterno
+    externalCaCertSecret: 
+      -  name: keycloak-ca-secret  # Secret per il certificato CA esterno
     externalCertSecret: []  # Secret per il certificato esterno
     requestAutoCert: true  # Richiedi automaticamente i certificati
     certConfig: {}  # Configurazione aggiuntiva per i certificati
@@ -109,7 +110,9 @@ tenant:
   prometheusOperator: false  # Abilita l'integrazione con Prometheus Operator
   logging: {}  # Configurazione del logging
   serviceMetadata: {}  # Metadati per i servizi
-  env: []  # Variabili di ambiente aggiuntive
+  env: 
+    - name: MINIO_IDENTITY_OPENID_TLS_CA_PATH
+      value: /certs/keycloak-ca-secret/ca.crt  # Variabili di ambiente aggiuntive
   priorityClassName: ""  # Nome della classe di priorità
   additionalVolumes: []  # Volumi aggiuntivi
   additionalVolumeMounts: []  # Mount dei volumi aggiuntivi
@@ -125,7 +128,7 @@ ingress:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     tls:
       - hosts: [minio-api.local]  # Host per TLS
-        secretName: minio-api.local-tls  # Secret per i certificati TLS
+        secretName: minio-tls  # Secret per i certificati TLS
     host: minio-api.local  # Nome host per l'API
     path: /  # Percorso per l'API
     pathType: Prefix  # Tipo di percorso
@@ -138,7 +141,7 @@ ingress:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     tls:
       - hosts: [minio-console.local]  # Host per TLS
-        secretName: minio-console.local-tls  # Secret per i certificati TLS
+        secretName: minio-tls  # Secret per i certificati TLS
     host: minio-console.local  # Nome host per la console
     path: /  # Percorso per la console
     pathType: Prefix  # Tipo di percorso
