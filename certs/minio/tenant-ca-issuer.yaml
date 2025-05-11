@@ -1,0 +1,9 @@
+# tenant-1-ca-issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: tenant-ca-issuer
+  namespace: minio-tenant
+spec:
+  ca:
+    secretName: tenant-ca-tls

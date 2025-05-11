@@ -79,10 +79,12 @@ tenant:
 
   # Configurazione dei certificati
   certificate:
-    externalCaCertSecret: 
-      -  name: keycloak-ca-secret  # Secret per il certificato CA esterno
-    externalCertSecret: []  # Secret per il certificato esterno
-    requestAutoCert: true  # Richiedi automaticamente i certificati
+    externalCaCertSecret: []
+#      -  name: keycloak-ca-secret  # Secret per il certificato CA esterno
+    externalCertSecret: 
+      - name: minio-tls
+        type: cert-manager.io/v1
+    requestAutoCert: false  # Richiedi automaticamente i certificati
     certConfig: {}  # Configurazione aggiuntiva per i certificati
 
   # Funzionalità aggiuntive

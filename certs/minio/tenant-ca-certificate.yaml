@@ -1,0 +1,18 @@
+# tenant-1-ca-certificate.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tenant-ca-certificate
+  namespace: minio-tenant
+spec:
+  isCA: true
+  commonName: tenant-ca
+  secretName: tenant-ca-tls
+  duration: 70128h # 8y
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned-cluster-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
