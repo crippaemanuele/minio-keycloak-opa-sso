@@ -1,0 +1,156 @@
+# Configurazione specifica per il tenant
+tenant:
+  name: minio  # Nome del tenant
+
+  # Configurazione dell'immagine per il container MinIO
+  image:
+    repository: quay.io/minio/minio  # Repository dell'immagine MinIO
+    tag: RELEASE.2025-04-03T14-56-28Z  # Tag dell'immagine
+    pullPolicy: IfNotPresent  # Politica di pull dell'immagine
+
+  imagePullSecret: {}  # Secret per il pull delle immagini (se necessario)
+
+  initContainers: []  # Elenco dei container di inizializzazione (vuoto di default)
+
+  scheduler: {}  # Configurazione personalizzata dello scheduler (se necessaria)
+
+  # Configurazione delle variabili di ambiente
+  configuration:
+    name: minio-env-configuration  # Nome del ConfigMap per le variabili di ambiente
+
+# Secret per le credenziali MinIO
+  configSecret:
+    name: minio-env-configuration  # Nome del secret
+    accessKey: minio  # Chiave di accesso per MinIO
+    secretKey: minio123  # Chiave segreta per MinIO
+
+  # Metadati per i pool di storage
+  poolsMetadata:
+    annotations: {}  # Annotazioni per i pool di storage
+    labels: {}  # Etichette per i pool di storage
+
+  # Configurazione dei pool di storage
+  pools:
+    - servers: 1  # Numero di server nel pool
+      name: pool-0  # Nome del pool
+      volumesPerServer: 1  # Numero di volumi per server
+      size: 10Gi  # Dimensione di ogni volume
+      storageClassname: standard  # Classe di storage da utilizzare
+      storageAnnotations: {}  # Annotazioni per lo storage
+      storageLabels: {}  # Etichette per lo storage
+      annotations: {}  # Annotazioni per il pool
+      labels: {}  # Etichette per il pool
+      tolerations: []  # Tolleranze per la schedulazione
+      nodeSelector: {}  # Selettore dei nodi per la schedulazione
+      affinity: {}  # Regole di affinità per la schedulazione
+      resources:  # Richieste e limiti delle risorse
+        requests:
+          memory: "512Mi"  # Richiesta di memoria
+          cpu: "250m"  # Richiesta di CPU
+        limits:
+          memory: "1Gi"  # Limite di memoria
+          cpu: "500m"  # Limite di CPU
+      securityContext:  # Contesto di sicurezza per il pool
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        runAsNonRoot: true
+      containerSecurityContext:  # Contesto di sicurezza per il container
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      topologySpreadConstraints: []  # Vincoli di distribuzione topologica
+
+  mountPath: /export  # Percorso di montaggio per lo storage
+  subPath: /data  # Sotto-percorso per lo storage
+
+  # Configurazione delle metriche
+  metrics:
+    enabled: true  # Abilita le metriche
+    port: 9000  # Porta per le metriche
+    protocol: http  # Protocollo per le metriche
+
+  # Configurazione dei certificati
+  certificate:
+    externalCaCertSecret: []  # Secret per il certificato CA esterno
+    externalCertSecret: []  # Secret per il certificato esterno
+    requestAutoCert: true  # Richiedi automaticamente i certificati
+    certConfig: {}  # Configurazione aggiuntiva per i certificati
+
+  # Funzionalità aggiuntive
+  features:
+    bucketDNS: false  # Abilita il DNS per i bucket
+    domains: {}  # Domini personalizzati
+    enableSFTP: false  # Abilita il supporto SFTP
+
+  # Configurazione dei bucket
+  buckets:
+    - name: documenti  # Nome del bucket
+
+  users: #Utenze MinIO
+    - name: minio-admin 
+
+  podManagementPolicy: Parallel  # Politica di gestione dei pod
+
+  liveness: {}  # Configurazione del probe di liveness
+  readiness: {}  # Configurazione del probe di readiness
+  startup: {}  # Configurazione del probe di startup
+  lifecycle: {}  # Hook per il ciclo di vita
+
+  exposeServices: {}  # Configurazione per l'esposizione dei servizi
+  serviceAccountName: ""  # Nome del service account
+  prometheusOperator: false  # Abilita l'integrazione con Prometheus Operator
+  logging: {}  # Configurazione del logging
+  serviceMetadata: {}  # Metadati per i servizi
+  env: []  # Variabili di ambiente aggiuntive
+  priorityClassName: ""  # Nome della classe di priorità
+  additionalVolumes: []  # Volumi aggiuntivi
+  additionalVolumeMounts: []  # Mount dei volumi aggiuntivi
+
+# Configurazione dell'ingress
+ingress:
+  api:
+    enabled: true  # Abilita l'ingress per l'API
+    ingressClassName: "nginx"  # Nome della classe ingress
+    labels: {}  # Etichette per l'ingress
+    annotations:  # Annotazioni per l'ingress
+      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer  # Cert-manager annotation for TLS
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    tls:
+      - hosts: [minio-api.local]  # Host per TLS
+        secretName: minio-api.local-tls  # Secret per i certificati TLS
+    host: minio-api.local  # Nome host per l'API
+    path: /  # Percorso per l'API
+    pathType: Prefix  # Tipo di percorso
+  console:
+    enabled: true  # Abilita l'ingress per la console
+    ingressClassName: "nginx"  # Nome della classe ingress
+    labels: {}  # Etichette per l'ingress
+    annotations:  # Annotazioni per l'ingress
+      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer  # Cert-manager annotation for TLS
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    tls:
+      - hosts: [minio-console.local]  # Host per TLS
+        secretName: minio-console.local-tls  # Secret per i certificati TLS
+    host: minio-console.local  # Nome host per la console
+    path: /  # Percorso per la console
+    pathType: Prefix  # Tipo di percorso
+
+# Configurazione OIDC per Keycloak
+oidc:
+  enabled: true  # Abilita l'autenticazione OIDC
+  config:
+    url: https://keycloak.local/auth/realms/minio-sso  # URL del realm di Keycloak
+    clientId: minio-client  # ID del client configurato in Keycloak
+    clientSecret: <client-secret>  # Secret del client configurato in Keycloak
+    claimName: policy  # Nome del claim da utilizzare per l'identità
+    scopes: "openid,profile,email"  # Scopes richiesti
+    jwks:
+      url: https://keycloak.local/auth/realms/minio-sso/protocol/openid-connect/certs  # URL per ottenere le chiavi pubbliche JWKS
