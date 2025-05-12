@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-api-cert
+  namespace: tenant-1
+spec:
+  secretName: minio-api.local-tls  # Nome del secret TLS
+  issuerRef:
+    name: selfsigned-root  # ClusterIssuer configurato
+    kind: ClusterIssuer
+  dnsNames:
+    - minio-api.local  # Nome DNS per l'API

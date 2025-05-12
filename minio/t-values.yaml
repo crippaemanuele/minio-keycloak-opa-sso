@@ -1,161 +1,144 @@
-# Configurazione specifica per il tenant
 tenant:
-  name: minio  # Nome del tenant
+  name: myminio  # Nome del tenant MinIO
+  namespace: tenant-1  # Namespace in cui è installato il tenant 
 
-  # Configurazione dell'immagine per il container MinIO
+
   image:
-    repository: quay.io/minio/minio  # Repository dell'immagine MinIO
-    tag: RELEASE.2025-04-03T14-56-28Z  # Tag dell'immagine
+    repository: quay.io/minio/minio  # Repository dell'immagine Docker di MinIO
+    tag: RELEASE.2024-11-07T00-52-20Z  # Versione dell'immagine
     pullPolicy: IfNotPresent  # Politica di pull dell'immagine
 
-  imagePullSecret: {}  # Secret per il pull delle immagini (se necessario)
+  imagePullSecret: {}  # Secret per autenticazione al registry (vuoto se non necessario)
 
-  initContainers: []  # Elenco dei container di inizializzazione (vuoto di default)
+  initContainers: []  # Contenitori di inizializzazione (vuoto se non necessario)
 
-  scheduler: {}  # Configurazione personalizzata dello scheduler (se necessaria)
+  scheduler: {}  # Configurazione dello scheduler (vuoto se non necessario)
 
-  # Configurazione delle variabili di ambiente
   configuration:
-    name: minio-env-configuration  # Nome del ConfigMap per le variabili di ambiente
+    name: myminio-env-configuration  # Nome della configurazione del tenant
 
-# Secret per le credenziali MinIO
   configSecret:
-    name: minio-env-configuration  # Nome del secret
+    name: myminio-env-configuration  # Nome del secret per le credenziali
     accessKey: minio  # Chiave di accesso per MinIO
     secretKey: minio123  # Chiave segreta per MinIO
 
-  # Metadati per i pool di storage
   poolsMetadata:
     annotations: {}  # Annotazioni per i pool di storage
     labels: {}  # Etichette per i pool di storage
 
-  # Configurazione dei pool di storage
   pools:
     - servers: 1  # Numero di server nel pool
       name: pool-0  # Nome del pool
       volumesPerServer: 1  # Numero di volumi per server
       size: 10Gi  # Dimensione di ogni volume
-      storageClassname: standard  # Classe di storage da utilizzare
       storageAnnotations: {}  # Annotazioni per lo storage
       storageLabels: {}  # Etichette per lo storage
-      annotations: {}  # Annotazioni per il pool
-      labels: {}  # Etichette per il pool
-      tolerations: []  # Tolleranze per la schedulazione
-      nodeSelector: {}  # Selettore dei nodi per la schedulazione
-      affinity: {}  # Regole di affinità per la schedulazione
-      resources:  # Richieste e limiti delle risorse
-        requests:
-          memory: "512Mi"  # Richiesta di memoria
-          cpu: "250m"  # Richiesta di CPU
-        limits:
-          memory: "1Gi"  # Limite di memoria
-          cpu: "500m"  # Limite di CPU
-      securityContext:  # Contesto di sicurezza per il pool
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: "OnRootMismatch"
-        runAsNonRoot: true
-      containerSecurityContext:  # Contesto di sicurezza per il container
-        runAsUser: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        allowPrivilegeEscalation: false
+      annotations: {}  # Annotazioni aggiuntive
+      labels: {}  # Etichette aggiuntive
+      tolerations: []  # Tolleranze per i nodi
+      nodeSelector: {}  # Selettore dei nodi
+      affinity: {}  # Affinità dei nodi
+      resources: {}  # Risorse richieste/limitate
+      securityContext:
+        runAsUser: 1000  # UID dell'utente
+        runAsGroup: 1000  # GID del gruppo
+        fsGroup: 1000  # GID del filesystem
+        fsGroupChangePolicy: "OnRootMismatch"  # Politica di modifica del gruppo
+        runAsNonRoot: true  # Esegui come utente non root
+      containerSecurityContext:
+        runAsUser: 1000  # UID dell'utente
+        runAsGroup: 1000  # GID del gruppo
+        runAsNonRoot: true  # Esegui come utente non root
+        allowPrivilegeEscalation: false  # Non consentire l'elevazione dei privilegi
         capabilities:
           drop:
-            - ALL
+            - ALL  # Rimuovi tutte le capacità
         seccompProfile:
-          type: RuntimeDefault
+          type: RuntimeDefault  # Profilo Seccomp predefinito
       topologySpreadConstraints: []  # Vincoli di distribuzione topologica
 
-  mountPath: /export  # Percorso di montaggio per lo storage
-  subPath: /data  # Sotto-percorso per lo storage
+  mountPath: /export  # Percorso di montaggio per i volumi
+  subPath: /data  # Sotto-percorso per i volumi
 
-  # Configurazione delle metriche
   metrics:
-    enabled: true  # Abilita le metriche
+    enabled: false  # Abilita/disabilita le metriche
     port: 9000  # Porta per le metriche
     protocol: http  # Protocollo per le metriche
 
-  # Configurazione dei certificati
   certificate:
-    externalCaCertSecret: []
-#      -  name: keycloak-ca-secret  # Secret per il certificato CA esterno
-    externalCertSecret: 
-      - name: minio-tls
-        type: cert-manager.io/v1
-    requestAutoCert: false  # Richiedi automaticamente i certificati
+    externalCaCertSecret: []  # Secret per CA esterna (vuoto se non necessario)
+    externalCertSecret: # Secret per certificati esterni (vuoto se non necessario)
+      - name: myminio-tls-custom
+        type: generic
+      - name: keycloak-tls-custom
+        type: generic
+    requestAutoCert: false  # Richiedi certificati automatici
     certConfig: {}  # Configurazione aggiuntiva per i certificati
 
-  # Funzionalità aggiuntive
   features:
-    bucketDNS: false  # Abilita il DNS per i bucket
-    domains: {}  # Domini personalizzati
-    enableSFTP: false  # Abilita il supporto SFTP
+    bucketDNS: false  # Abilita/disabilita il DNS per i bucket
+    domains: {}  # Configurazione dei domini
+    enableSFTP: false  # Abilita/disabilita SFTP
 
-  # Configurazione dei bucket
-  buckets:
-    - name: documenti  # Nome del bucket
-
-  users: #Utenze MinIO
-    - name: minio-admin 
+  buckets: []  # Configurazione dei bucket (vuoto se non necessario)
+  users: []  # Configurazione degli utenti (vuoto se non necessario)
 
   podManagementPolicy: Parallel  # Politica di gestione dei pod
 
   liveness: {}  # Configurazione del probe di liveness
   readiness: {}  # Configurazione del probe di readiness
   startup: {}  # Configurazione del probe di startup
-  lifecycle: {}  # Hook per il ciclo di vita
+  lifecycle: {}  # Configurazione del ciclo di vita dei pod
 
-  exposeServices: {}  # Configurazione per l'esposizione dei servizi
-  serviceAccountName: ""  # Nome del service account
-  prometheusOperator: false  # Abilita l'integrazione con Prometheus Operator
+  exposeServices: {}  # Configurazione dei servizi esposti
+
+  serviceAccountName: ""  # Nome del service account (vuoto se non necessario)
+  prometheusOperator: false  # Abilita/disabilita l'operatore Prometheus
+
   logging: {}  # Configurazione del logging
   serviceMetadata: {}  # Metadati per i servizi
-  env: 
-    - name: MINIO_IDENTITY_OPENID_TLS_CA_PATH
-      value: /certs/keycloak-ca-secret/ca.crt  # Variabili di ambiente aggiuntive
-  priorityClassName: ""  # Nome della classe di priorità
+  env: []  # Variabili di ambiente aggiuntive
+  priorityClassName: ""  # Nome della classe di priorità (vuoto se non necessario)
   additionalVolumes: []  # Volumi aggiuntivi
   additionalVolumeMounts: []  # Mount dei volumi aggiuntivi
 
-# Configurazione dell'ingress
 ingress:
   api:
-    enabled: true  # Abilita l'ingress per l'API
-    ingressClassName: "nginx"  # Nome della classe ingress
-    labels: {}  # Etichette per l'ingress
-    annotations:  # Annotazioni per l'ingress
-      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer  # Cert-manager annotation for TLS
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    enabled: true  # Abilita l'ingress per le API
+    ingressClassName: "nginx"  # Nome della classe di ingress
+    annotations:
+      cert-manager.io/cluster-issuer: selfsigned-root  # ClusterIssuer per i certificati
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Protocollo backend
     tls:
-      - hosts: [minio-api.local]  # Host per TLS
-        secretName: minio-api.local-tls  # Secret per i certificati TLS
-    host: minio-api.local  # Nome host per l'API
-    path: /  # Percorso per l'API
-    pathType: Prefix  # Tipo di percorso
-  console:
-    enabled: true  # Abilita l'ingress per la console
-    ingressClassName: "nginx"  # Nome della classe ingress
-    labels: {}  # Etichette per l'ingress
-    annotations:  # Annotazioni per l'ingress
-      cert-manager.io/cluster-issuer: selfsigned-cluster-issuer  # Cert-manager annotation for TLS
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    tls:
-      - hosts: [minio-console.local]  # Host per TLS
-        secretName: minio-console.local-tls  # Secret per i certificati TLS
-    host: minio-console.local  # Nome host per la console
-    path: /  # Percorso per la console
+      - hosts:
+          - minio-api.local
+        secretName: minio-api.local-tls  # Secret TLS per le API
+    host: minio-api.local  # Host per le API
+    path: /
     pathType: Prefix  # Tipo di percorso
 
-# Configurazione OIDC per Keycloak
-#oidc:
-#  enabled: true  # Abilita l'autenticazione OIDC
-#  config:
-#    url: https://keycloak.local/auth/realms/minio-sso  # URL del realm di Keycloak
-#    clientId: minio-client  # ID del client configurato in Keycloak
-#    clientSecret: <client-secret>  # Secret del client configurato in Keycloak
-#    claimName: policy  # Nome del claim da utilizzare per l'identità
-#    scopes: "openid,profile,email"  # Scopes richiesti
-#    jwks:
-#      url: https://keycloak.local/auth/realms/minio-sso/protocol/openid-connect/certs  # URL per ottenere le chiavi pubbliche JWKS
+  console:
+    enabled: true  # Abilita l'ingress per la console
+    ingressClassName: "nginx"  # Nome della classe di ingress
+    annotations:
+      cert-manager.io/cluster-issuer: selfsigned-root  # ClusterIssuer per i certificati
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Protocollo backend
+    tls:
+      - hosts:
+          - minio-console.local
+        secretName: minio-console.local-tls  # Secret TLS per la console
+    host: minio-console.local  # Host per la console
+    path: /
+    pathType: Prefix  # Tipo di percorso
+
+
+
+
+
+
+
+
+
+
+
+

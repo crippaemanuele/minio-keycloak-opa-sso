@@ -8,7 +8,7 @@ spec:
   dnsNames:
     - sts
     - sts.minio-operator.svc
-    - sts.minio-operator.svc.cluster.local 
+    - sts.minio-operator.svc.cluster.local # Replace cluster.local with the value for your domain.
   secretName: sts-tls
   issuerRef:
     name: minio-operator-ca-issuer
