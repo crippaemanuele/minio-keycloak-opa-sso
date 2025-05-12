@@ -27,7 +27,7 @@ tenant:
     labels: {}  # Etichette per i pool di storage
 
   pools:
-    - servers: 4  # Numero di server nel pool
+    - servers: 1  # Numero di server nel pool
       name: pool-0  # Nome del pool
       volumesPerServer: 1  # Numero di volumi per server
       size: 10Gi  # Dimensione di ogni volume
@@ -68,8 +68,8 @@ tenant:
   certificate:
     externalCaCertSecret: []  # Secret per CA esterna (vuoto se non necessario)
     externalCertSecret: # Secret per certificati esterni (vuoto se non necessario)
-      - name: myminio-tls
-        type: cert-manager.io
+      - name: myminio-tls-custom
+        type: generic
     requestAutoCert: false  # Richiedi certificati automatici
     certConfig: {}  # Configurazione aggiuntiva per i certificati
 
@@ -102,22 +102,31 @@ tenant:
 
 ingress:
   api:
-    enabled: true  # Abilita/disabilita l'ingress per l'API
+    enabled: true  # Abilita l'ingress per le API
     ingressClassName: "nginx"  # Nome della classe di ingress
-    labels: {}  # Etichette per l'ingress
-    annotations: {}  # Annotazioni per l'ingress
-    tls: []  # Configurazione TLS
-    host: minio-api.local  # Host per l'API
-    path: /  # Percorso per l'API
+    annotations:
+      cert-manager.io/cluster-issuer: selfsigned-root  # ClusterIssuer per i certificati
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Protocollo backend
+    tls:
+      - hosts:
+          - minio-api.local
+        secretName: minio-api.local-tls  # Secret TLS per le API
+    host: minio-api.local  # Host per le API
+    path: /
     pathType: Prefix  # Tipo di percorso
+
   console:
-    enabled: true  # Abilita/disabilita l'ingress per la console
-    ingressClassName: ""  # Nome della classe di ingress
-    labels: {}  # Etichette per l'ingress
-    annotations: {}  # Annotazioni per l'ingress
-    tls: []  # Configurazione TLS
+    enabled: true  # Abilita l'ingress per la console
+    ingressClassName: "nginx"  # Nome della classe di ingress
+    annotations:
+      cert-manager.io/cluster-issuer: selfsigned-root  # ClusterIssuer per i certificati
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Protocollo backend
+    tls:
+      - hosts:
+          - minio-console.local
+        secretName: minio-console.local-tls  # Secret TLS per la console
     host: minio-console.local  # Host per la console
-    path: /  # Percorso per la console
+    path: /
     pathType: Prefix  # Tipo di percorso
 
 

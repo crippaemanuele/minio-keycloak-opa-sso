@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-console-cert
+  namespace: tenant-1
+spec:
+  secretName: minio-console.local-tls  # Nome del secret TLS
+  issuerRef:
+    name: selfsigned-root  # ClusterIssuer configurato
+    kind: ClusterIssuer
+  dnsNames:
+    - minio-console.local  # Nome DNS per la console
