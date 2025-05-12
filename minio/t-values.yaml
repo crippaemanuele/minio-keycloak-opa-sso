@@ -70,6 +70,8 @@ tenant:
     externalCertSecret: # Secret per certificati esterni (vuoto se non necessario)
       - name: myminio-tls-custom
         type: generic
+      - name: keycloak-tls-custom
+        type: generic
     requestAutoCert: false  # Richiedi certificati automatici
     certConfig: {}  # Configurazione aggiuntiva per i certificati
 

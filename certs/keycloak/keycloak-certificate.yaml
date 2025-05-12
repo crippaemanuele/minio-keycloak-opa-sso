@@ -1,0 +1,12 @@
+#keycloak-certificate.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak-certmanager-cert
+  namespace: keycloak
+spec:
+  dnsNames:
+    - "keycloak.local"
+  secretName: keycloak-tls
+  issuerRef:
+    name: keycloak-ca-issuer

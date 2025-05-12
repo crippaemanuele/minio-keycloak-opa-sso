@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak.local-cert
+  namespace: keycloak
+spec:
+  secretName: keycloak.local-tls  # Nome del secret TLS
+  issuerRef:
+    name: keycloak-ca-issuer      # Nome dell'Issuer configurato
+    kind: Issuer
+  dnsNames:
+    - keycloak.local              # Dominio corretto per Keycloak
