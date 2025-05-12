@@ -1,0 +1,133 @@
+tenant:
+  name: myminio  # Nome del tenant MinIO
+  namespace: tenant-1  # Namespace in cui è installato il tenant 
+
+
+  image:
+    repository: quay.io/minio/minio  # Repository dell'immagine Docker di MinIO
+    tag: RELEASE.2024-11-07T00-52-20Z  # Versione dell'immagine
+    pullPolicy: IfNotPresent  # Politica di pull dell'immagine
+
+  imagePullSecret: {}  # Secret per autenticazione al registry (vuoto se non necessario)
+
+  initContainers: []  # Contenitori di inizializzazione (vuoto se non necessario)
+
+  scheduler: {}  # Configurazione dello scheduler (vuoto se non necessario)
+
+  configuration:
+    name: myminio-env-configuration  # Nome della configurazione del tenant
+
+  configSecret:
+    name: myminio-env-configuration  # Nome del secret per le credenziali
+    accessKey: minio  # Chiave di accesso per MinIO
+    secretKey: minio123  # Chiave segreta per MinIO
+
+  poolsMetadata:
+    annotations: {}  # Annotazioni per i pool di storage
+    labels: {}  # Etichette per i pool di storage
+
+  pools:
+    - servers: 4  # Numero di server nel pool
+      name: pool-0  # Nome del pool
+      volumesPerServer: 1  # Numero di volumi per server
+      size: 10Gi  # Dimensione di ogni volume
+      storageAnnotations: {}  # Annotazioni per lo storage
+      storageLabels: {}  # Etichette per lo storage
+      annotations: {}  # Annotazioni aggiuntive
+      labels: {}  # Etichette aggiuntive
+      tolerations: []  # Tolleranze per i nodi
+      nodeSelector: {}  # Selettore dei nodi
+      affinity: {}  # Affinità dei nodi
+      resources: {}  # Risorse richieste/limitate
+      securityContext:
+        runAsUser: 1000  # UID dell'utente
+        runAsGroup: 1000  # GID del gruppo
+        fsGroup: 1000  # GID del filesystem
+        fsGroupChangePolicy: "OnRootMismatch"  # Politica di modifica del gruppo
+        runAsNonRoot: true  # Esegui come utente non root
+      containerSecurityContext:
+        runAsUser: 1000  # UID dell'utente
+        runAsGroup: 1000  # GID del gruppo
+        runAsNonRoot: true  # Esegui come utente non root
+        allowPrivilegeEscalation: false  # Non consentire l'elevazione dei privilegi
+        capabilities:
+          drop:
+            - ALL  # Rimuovi tutte le capacità
+        seccompProfile:
+          type: RuntimeDefault  # Profilo Seccomp predefinito
+      topologySpreadConstraints: []  # Vincoli di distribuzione topologica
+
+  mountPath: /export  # Percorso di montaggio per i volumi
+  subPath: /data  # Sotto-percorso per i volumi
+
+  metrics:
+    enabled: false  # Abilita/disabilita le metriche
+    port: 9000  # Porta per le metriche
+    protocol: http  # Protocollo per le metriche
+
+  certificate:
+    externalCaCertSecret: []  # Secret per CA esterna (vuoto se non necessario)
+    externalCertSecret: # Secret per certificati esterni (vuoto se non necessario)
+      - name: myminio-tls
+        type: cert-manager.io
+    requestAutoCert: false  # Richiedi certificati automatici
+    certConfig: {}  # Configurazione aggiuntiva per i certificati
+
+  features:
+    bucketDNS: false  # Abilita/disabilita il DNS per i bucket
+    domains: {}  # Configurazione dei domini
+    enableSFTP: false  # Abilita/disabilita SFTP
+
+  buckets: []  # Configurazione dei bucket (vuoto se non necessario)
+  users: []  # Configurazione degli utenti (vuoto se non necessario)
+
+  podManagementPolicy: Parallel  # Politica di gestione dei pod
+
+  liveness: {}  # Configurazione del probe di liveness
+  readiness: {}  # Configurazione del probe di readiness
+  startup: {}  # Configurazione del probe di startup
+  lifecycle: {}  # Configurazione del ciclo di vita dei pod
+
+  exposeServices: {}  # Configurazione dei servizi esposti
+
+  serviceAccountName: ""  # Nome del service account (vuoto se non necessario)
+  prometheusOperator: false  # Abilita/disabilita l'operatore Prometheus
+
+  logging: {}  # Configurazione del logging
+  serviceMetadata: {}  # Metadati per i servizi
+  env: []  # Variabili di ambiente aggiuntive
+  priorityClassName: ""  # Nome della classe di priorità (vuoto se non necessario)
+  additionalVolumes: []  # Volumi aggiuntivi
+  additionalVolumeMounts: []  # Mount dei volumi aggiuntivi
+
+ingress:
+  api:
+    enabled: true  # Abilita/disabilita l'ingress per l'API
+    ingressClassName: "nginx"  # Nome della classe di ingress
+    labels: {}  # Etichette per l'ingress
+    annotations: {}  # Annotazioni per l'ingress
+    tls: []  # Configurazione TLS
+    host: minio-api.local  # Host per l'API
+    path: /  # Percorso per l'API
+    pathType: Prefix  # Tipo di percorso
+  console:
+    enabled: true  # Abilita/disabilita l'ingress per la console
+    ingressClassName: ""  # Nome della classe di ingress
+    labels: {}  # Etichette per l'ingress
+    annotations: {}  # Annotazioni per l'ingress
+    tls: []  # Configurazione TLS
+    host: minio-console.local  # Host per la console
+    path: /  # Percorso per la console
+    pathType: Prefix  # Tipo di percorso
+
+
+
+
+
+
+
+
+
+
+
+
