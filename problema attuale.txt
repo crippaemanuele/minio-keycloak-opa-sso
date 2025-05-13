@@ -1,0 +1,1 @@
+Get "https://keycloak.local/realms/MinIO/.well-known/openid-configuration": tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of "x509: invalid signature: parent certificate cannot sign this kind of certificate" while trying to verify candidate authority certificate "serial:224758096200142166242866379514956811737")
