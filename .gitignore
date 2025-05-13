@@ -1,3 +1,4 @@
 # Escludi i certificati CA
 keycloak-ca.crt
 minio-ca.crt
+problema-attuale.txt
