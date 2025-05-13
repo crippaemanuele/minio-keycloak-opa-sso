@@ -37,8 +37,12 @@ kubectl get secrets -n keycloak keycloak-ca-tls \
 
 # Crea un secret per il certificato CA di Keycloak nel namespace del MinIO Operator
 kubectl create secret generic operator-ca-tls-keycloak \
-  --from-file=keycloak-ca.crt -n minio-operator
-
+  --from-file=keycloak-ca.crt \
+  -n keycloak
+kubectl create secret generic operator-ca-tls-keycloak \
+  --from-file=keycloak-ca.crt \
+  -n tenant-1
+  
 #Installa o aggiorna Keycloak con Helm
 helm upgrade --install keycloak bitnami/keycloak --namespace keycloak --create-namespace -f keycloak/values.yaml
 KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d)

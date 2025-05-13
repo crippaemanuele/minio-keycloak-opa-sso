@@ -66,7 +66,9 @@ tenant:
     protocol: http  # Protocollo per le metriche
 
   certificate:
-    externalCaCertSecret: []  # Secret per CA esterna (vuoto se non necessario)
+    externalCaCertSecret:
+      - name: operator-ca-tls-keycloak
+        type: generic
     externalCertSecret: # Secret per certificati esterni (vuoto se non necessario)
       - name: myminio-tls-custom
         type: generic
