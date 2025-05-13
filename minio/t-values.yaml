@@ -80,7 +80,8 @@ tenant:
     domains: {}  # Configurazione dei domini
     enableSFTP: false  # Abilita/disabilita SFTP
 
-  buckets: []  # Configurazione dei bucket (vuoto se non necessario)
+  buckets:
+    - name: documenti  # Nome del bucket
   users: []  # Configurazione degli utenti (vuoto se non necessario)
 
   podManagementPolicy: Parallel  # Politica di gestione dei pod
