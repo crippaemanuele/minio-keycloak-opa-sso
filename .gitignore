@@ -2,3 +2,6 @@
 keycloak-ca.crt
 minio-ca.crt
 problema-attuale.txt
+
+# Ignora la cartella tmp e tutti i suoi contenuti
+tmp/

@@ -1,1 +1,29 @@
-Get "https://keycloak.local/realms/MinIO/.well-known/openid-configuration": tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of "x509: invalid signature: parent certificate cannot sign this kind of certificate" while trying to verify candidate authority certificate "serial:224758096200142166242866379514956811737")
+Get "https://keycloak.local/realms/MinIO/.well-known/openid-configuration": tls: 
+failed to verify certificate: x509: certificate signed by unknown authority 
+(possibly because of "x509: invalid signature: parent certificate cannot sign 
+this kind of certificate" while trying to verify candidate authority certificate 
+"serial:224758096200142166242866379514956811737")
+
+
+#TO-DO
+Usare trust-manager, salvare tutti i certificate authority e montarlo al percorso,
+usando label per ricopiare nei vari ns
+
+
+- spiegazione cloud, s3
+    - necessità bucket
+        - esempi
+        - soluzione opensource
+- collegamento a tesi
+    - creazione di una replica con open-source
+- spiegazione servizi
+    - autenticazione
+    - autorizzazione
+        - MinIO o OPA
+- testing
+    - mc
+- riepilogo
+    - obiettivi raggiunti
+    - difficoltà
+    - sviluppi futuri
+

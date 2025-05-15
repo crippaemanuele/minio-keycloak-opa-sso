@@ -162,7 +162,7 @@ ingress:
   path: '{{ .Values.httpRelativePath }}'  # Path for the ingress
   servicePort: http  # Service port for the ingress
   annotations:  # Annotations for the ingress
-    cert-manager.io/cluster-issuer: selfsigned-root  # Cert-manager annotation for TLS
+    cert-manager.io/cluster-issuer: keycloak-ca-issuer  # Cert-manager annotation for TLS
   labels: {}  # Labels for the ingress
   tls: true  # Enable TLS for the ingress
   selfSigned: false  # Use self-signed certificates
@@ -476,3 +476,14 @@ cache:
 logging:
   output: default
   level: INFO
+
+extraVolumes:
+  - name: ca
+    configMap:
+      name: my-org.com
+      defaultMode: 0444
+extraVolumeMounts:
+  - name: ca
+    mountPath: /opt/bitnami/java/lib/security/cacerts
+    subPath: ca-certificates.p12
+    readOnly: true

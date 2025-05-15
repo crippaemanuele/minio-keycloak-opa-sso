@@ -66,14 +66,14 @@ tenant:
     protocol: http  # Protocollo per le metriche
 
   certificate:
-    externalCaCertSecret:
-      - name: operator-ca-tls-keycloak
+    externalCaCertSecret: 
+#      - name: operator-ca-tls-keycloak
+#        type: generic
+    externalCertSecret: # Secret per certificati esterni
+      - name: myminio-tls
         type: generic
-    externalCertSecret: # Secret per certificati esterni (vuoto se non necessario)
-      - name: myminio-tls-custom
-        type: generic
-      - name: keycloak-tls-custom
-        type: generic
+#      - name: keycloak-tls-custom
+#        type: generic
     requestAutoCert: false  # Richiedi certificati automatici
     certConfig: {}  # Configurazione aggiuntiva per i certificati
 
@@ -102,8 +102,16 @@ tenant:
   serviceMetadata: {}  # Metadati per i servizi
   env: []  # Variabili di ambiente aggiuntive
   priorityClassName: ""  # Nome della classe di priorità (vuoto se non necessario)
-  additionalVolumes: []  # Volumi aggiuntivi
-  additionalVolumeMounts: []  # Mount dei volumi aggiuntivi
+  additionalVolumes:  # Volumi aggiuntivi
+    - name: ca
+      configMap: 
+        name: my-org.com
+        defaultMode: 0444
+  additionalVolumeMounts:  # Mount dei volumi aggiuntivi
+    - name: ca
+      mountPath: /etc/ssl/certs/ca-certificates.crt
+      subPath: ca-certificates.crt
+      readOnly: true  # Monta il volume come read-only
 
 ingress:
   api:

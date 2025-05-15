@@ -6,8 +6,10 @@ inizializzazione() {
   minikube addons enable ingress
   kubectl create ns cert-manager
   kubectl create ns keycloak
+  kubectl label namespace keycloak create-ca-bundle=true --overwrite=true
   kubectl create ns minio-operator
   kubectl create ns tenant-1
+  kubectl label namespace tenant-1 create-ca-bundle=true --overwrite=true
 }
 
 # Funzione per configurare Cert-Manager
@@ -16,21 +18,73 @@ configura_cert_manager() {
   helm upgrade --install cert-manager jetstack/cert-manager \
     --namespace cert-manager --create-namespace \
     --set crds.enabled=true
+  helm upgrade --install trust-manager jetstack/trust-manager \
+    --namespace cert-manager \
+    -f trust-manager/values.yaml
   kubectl apply -f certs/selfsigned-root-clusterissuer.yaml
 }
 
-# Funzione per configurare Keycloak
-configura_keycloak() {
-  echo "Configurando Keycloak..."
+configura_certificati(){
+  #KEYCLOAK
   kubectl apply -f certs/keycloak/keycloak-ca-certificate.yaml
   kubectl apply -f certs/keycloak/keycloak-ca-issuer.yaml
   kubectl apply -f certs/keycloak/keycloak-certificate.yaml
   kubectl get secrets -n keycloak keycloak-ca-tls \
     -o=jsonpath='{.data.ca\.crt}' | base64 -d > keycloak-ca.crt
-  kubectl create secret generic operator-ca-tls-keycloak \
-    --from-file=keycloak-ca.crt -n keycloak
-  kubectl create secret generic operator-ca-tls-keycloak \
-    --from-file=keycloak-ca.crt -n tenant-1
+#  kubectl create secret generic operator-ca-tls-keycloak \
+#    --from-file=keycloak-ca.crt -n keycloak
+#  kubectl create secret generic operator-ca-tls-keycloak \
+#    --from-file=keycloak-ca.crt -n tenant-1
+  kubectl create secret generic keycloak-ca-tls \
+    --from-file=keycloak-ca.crt -n cert-manager
+  #MINIO-OPERATOR
+  kubectl apply -f certs/minio/operator-ca-tls-secret.yaml
+  kubectl apply -f certs/minio/operator-ca-issuer.yaml
+  kubectl apply -f certs/minio/sts-tls-certificate.yaml
+  #MINIO-TENANT
+  kubectl apply -f certs/minio/tenant-1-ca-certificate.yaml
+  kubectl apply -f certs/minio/tenant-1-ca-issuer.yaml
+  kubectl apply -f certs/minio/tenant-1-minio-certificate.yaml
+  kubectl get secrets -n tenant-1 tenant-1-ca-tls \
+    -o=jsonpath='{.data.ca\.crt}' | base64 -d > minio-ca.crt
+#  kubectl create secret generic operator-ca-tls-tenant-1 \
+#    --from-file=minio-ca.crt -n minio-operator
+  kubectl create secret generic tenant-1-ca-tls \
+    --from-file=minio-ca.crt -n cert-manager
+  kubectl apply -f certs/ingress/minio-api-crt.yaml
+  kubectl apply -f certs/ingress/minio-console-crt.yaml
+  # Estrai e decodifica i dati in file temporanei
+  mkdir ./tmp
+  kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/m_public.crt
+  kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/m_private.key
+  # Crea il nuovo secret mantenendo la formattazione esatta
+  kubectl create secret generic myminio-tls-custom \
+    --from-file=public.crt=tmp/m_public.crt \
+    --from-file=private.key=tmp/m_private.key \
+    -n tenant-1
+
+  # Aggiungi public.crt e private.key al secret myminio-tls
+  kubectl patch secret myminio-tls -n tenant-1 --type='json' -p='[
+    {"op": "add", "path": "/data/public.crt", "value":"'"$(cat tmp/m_public.crt | base64 -w 0)"'"},
+    {"op": "add", "path": "/data/private.key", "value":"'"$(cat tmp/m_private.key | base64 -w 0)"'"}
+  ]'
+
+  # Estrai e decodifica i dati in file temporanei
+  kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/k_public.crt
+  kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/k_private.key
+  # Crea il nuovo secret mantenendo la formattazione esatta
+  kubectl create secret generic keycloak-tls-custom \
+    --from-file=public.crt=tmp/k_public.crt \
+    --from-file=private.key=tmp/k_private.key \
+    -n tenant-1
+  # Pulisci i file temporanei 
+  rm -rf ./tmp
+}
+
+# Funzione per configurare Keycloak
+configura_keycloak() {
+  echo "Configurando Keycloak..."
+  
   helm upgrade --install keycloak bitnami/keycloak --namespace keycloak --create-namespace -f keycloak/values.yaml
   KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d)
   echo "Password di Keycloak: $KEYCLOAK_PASSWORD"
@@ -39,9 +93,7 @@ configura_keycloak() {
 # Funzione per configurare il MinIO Operator
 configura_minio_operator() {
   echo "Configurando MinIO Operator..."
-  kubectl apply -f certs/minio/operator-ca-tls-secret.yaml
-  kubectl apply -f certs/minio/operator-ca-issuer.yaml
-  kubectl apply -f certs/minio/sts-tls-certificate.yaml
+  
   helm upgrade --install operator minio-operator/operator \
     --namespace minio-operator --create-namespace \
     -f minio/o-values.yaml
@@ -50,27 +102,6 @@ configura_minio_operator() {
 # Funzione per configurare il tenant di MinIO
 configura_tenant_minio() {
   echo "Configurando il tenant di MinIO..."
-  kubectl apply -f certs/minio/tenant-1-ca-certificate.yaml
-  kubectl apply -f certs/minio/tenant-1-ca-issuer.yaml
-  kubectl apply -f certs/minio/tenant-1-minio-certificate.yaml
-  kubectl get secrets -n tenant-1 tenant-1-ca-tls \
-    -o=jsonpath='{.data.ca\.crt}' | base64 -d > minio-ca.crt
-  kubectl create secret generic operator-ca-tls-tenant-1 \
-    --from-file=minio-ca.crt -n minio-operator
-  kubectl apply -f certs/ingress/minio-api-crt.yaml
-  kubectl apply -f certs/ingress/minio-console-crt.yaml
-  kubectl create secret generic myminio-tls-custom \
-    --from-literal=public.crt="$(kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.crt}' | base64 -d)" \
-    --from-literal=private.key="$(kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.key}' | base64 -d)" \
-    -n tenant-1
-  kubectl patch secret myminio-tls -n tenant-1 --type='json' -p='[
-    {"op": "replace", "path": "/data/public.crt", "value":"'"$(kubectl get secret myminio-tls-custom -n tenant-1 -o jsonpath='{.data.public\.crt}')"'" },
-    {"op": "replace", "path": "/data/private.key", "value":"'"$(kubectl get secret myminio-tls-custom -n tenant-1 -o jsonpath='{.data.private\.key}')"'" }
-  ]'
-  kubectl create secret generic keycloak-tls-custom \
-    --from-literal=public.crt="$(kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.crt}' | base64 -d)" \
-    --from-literal=private.key="$(kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.key}' | base64 -d)" \
-    -n tenant-1
   helm upgrade --install myminio minio-operator/tenant \
     --namespace tenant-1 --create-namespace \
     -f minio/t-values.yaml
@@ -78,6 +109,7 @@ configura_tenant_minio() {
 
 inizializzazione
 configura_cert_manager
+configura_certificati
 configura_keycloak
 configura_minio_operator
 configura_tenant_minio
