@@ -27,3 +27,5 @@ usando label per ricopiare nei vari ns
     - difficoltà
     - sviluppi futuri
 
+
+cercare i problemi nel log di nginx per cercare come mai rifiuta i certificati e li scarta

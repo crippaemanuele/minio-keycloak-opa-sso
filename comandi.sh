@@ -1,8 +1,8 @@
 # Funzione per l'inizializzazione
 inizializzazione() {
   echo "Eseguendo inizializzazione..."
-  cd Projects/minio-keycloak-sso/
-  minikube start --driver=docker --cpus=3 --memory=6144
+  #cd Projects/minio-keycloak-sso/
+  #minikube start --driver=docker --cpus=3 --memory=6144
   minikube addons enable ingress
   kubectl create ns cert-manager
   kubectl create ns keycloak
@@ -48,6 +48,7 @@ configura_certificati(){
     --from-file=minio-ca.crt -n cert-manager
   # Estrai e decodifica i dati in file temporanei
   mkdir ./tmp
+  kubectl wait --for=create secret myminio-tls -n tenant-1
   kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/m_public.crt
   kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/m_private.key
   # Crea il nuovo secret mantenendo la formattazione esatta
@@ -63,6 +64,7 @@ configura_certificati(){
   ]'
 
   # Estrai e decodifica i dati in file temporanei
+  kubectl wait --for=create secret keycloak-tls -n keycloak
   kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/k_public.crt
   kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/k_private.key
   # Crea il nuovo secret mantenendo la formattazione esatta
