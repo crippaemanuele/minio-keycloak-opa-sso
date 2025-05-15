@@ -28,13 +28,9 @@ configura_certificati(){
   #KEYCLOAK
   kubectl apply -f certs/keycloak/keycloak-ca-certificate.yaml
   kubectl apply -f certs/keycloak/keycloak-ca-issuer.yaml
-  kubectl apply -f certs/keycloak/keycloak-certificate.yaml
+  kubectl wait --for=create secret keycloak-ca-tls -n keycloak
   kubectl get secrets -n keycloak keycloak-ca-tls \
     -o=jsonpath='{.data.ca\.crt}' | base64 -d > keycloak-ca.crt
-#  kubectl create secret generic operator-ca-tls-keycloak \
-#    --from-file=keycloak-ca.crt -n keycloak
-#  kubectl create secret generic operator-ca-tls-keycloak \
-#    --from-file=keycloak-ca.crt -n tenant-1
   kubectl create secret generic keycloak-ca-tls \
     --from-file=keycloak-ca.crt -n cert-manager
   #MINIO-OPERATOR
@@ -45,14 +41,11 @@ configura_certificati(){
   kubectl apply -f certs/minio/tenant-1-ca-certificate.yaml
   kubectl apply -f certs/minio/tenant-1-ca-issuer.yaml
   kubectl apply -f certs/minio/tenant-1-minio-certificate.yaml
+  kubectl wait --for=create secret tenant-1-ca-tls -n tenant-1
   kubectl get secrets -n tenant-1 tenant-1-ca-tls \
     -o=jsonpath='{.data.ca\.crt}' | base64 -d > minio-ca.crt
-#  kubectl create secret generic operator-ca-tls-tenant-1 \
-#    --from-file=minio-ca.crt -n minio-operator
   kubectl create secret generic tenant-1-ca-tls \
     --from-file=minio-ca.crt -n cert-manager
-  kubectl apply -f certs/ingress/minio-api-crt.yaml
-  kubectl apply -f certs/ingress/minio-console-crt.yaml
   # Estrai e decodifica i dati in file temporanei
   mkdir ./tmp
   kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/m_public.crt
@@ -79,6 +72,9 @@ configura_certificati(){
     -n tenant-1
   # Pulisci i file temporanei 
   rm -rf ./tmp
+
+  #Creazione bundle
+  kubectl create -f trust-manager/bundle.yaml
 }
 
 # Funzione per configurare Keycloak

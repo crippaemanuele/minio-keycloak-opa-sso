@@ -118,7 +118,7 @@ ingress:
     enabled: true  # Abilita l'ingress per le API
     ingressClassName: "nginx"  # Nome della classe di ingress
     annotations:
-      cert-manager.io/cluster-issuer: selfsigned-root  # ClusterIssuer per i certificati
+      cert-manager.io/cluster-issuer: tenant-1-ca-issuer  # ClusterIssuer per i certificati
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Protocollo backend
     tls:
       - hosts:
@@ -132,7 +132,7 @@ ingress:
     enabled: true  # Abilita l'ingress per la console
     ingressClassName: "nginx"  # Nome della classe di ingress
     annotations:
-      cert-manager.io/cluster-issuer: selfsigned-root  # ClusterIssuer per i certificati
+      cert-manager.io/cluster-issuer: tenant-1-ca-issuer  # ClusterIssuer per i certificati
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Protocollo backend
     tls:
       - hosts:

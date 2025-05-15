@@ -16,9 +16,12 @@ spec:
 #      key: "ca.crt"
   - secret:
       name: "keycloak-ca-tls"
-      key: "ca.crt"
+      key: "keycloak-ca.crt"
   - secret:
       name: "tenant-1-ca-tls"
+      key: "minio-ca.crt"
+  - configMap:
+      name: "kube-root-ca.crt"
       key: "ca.crt"
 
   target:
