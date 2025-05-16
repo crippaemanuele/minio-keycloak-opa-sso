@@ -100,7 +100,7 @@ tenant:
   additionalVolumes:  # Volumi aggiuntivi
     - name: ca
       configMap: 
-        name: my-org.com
+        name: ca-bundle
         defaultMode: 0444
   additionalVolumeMounts:  # Mount dei volumi aggiuntivi
     - name: ca

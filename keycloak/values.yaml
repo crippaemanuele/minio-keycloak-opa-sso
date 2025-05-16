@@ -480,7 +480,7 @@ logging:
 extraVolumes:
   - name: ca
     configMap:
-      name: my-org.com
+      name: ca-bundle
       defaultMode: 0444
 extraVolumeMounts:
   - name: ca

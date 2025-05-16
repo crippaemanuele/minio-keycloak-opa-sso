@@ -1,7 +1,7 @@
 apiVersion: trust.cert-manager.io/v1alpha1
 kind: Bundle
 metadata:
-  name: my-org.com  # The bundle name will also be used for the target
+  name: ca-bundle  # The bundle name will also be used for the target
 spec:
   sources:
   # Include a bundle of publicly trusted certificates which can be
@@ -25,7 +25,7 @@ spec:
       key: "ca.crt"
 
   target:
-    # Sync the bundle to a ConfigMap called `my-org.com` in every namespace which
+    # Sync the bundle to a ConfigMap called `ca-bundle` in every namespace which
     # has the label "linkerd.io/inject=enabled"
     # All ConfigMaps will include a PEM-formatted bundle, here named "root-certs.pem"
     # and in this case we also request binary formatted bundles in JKS and PKCS#12 formats,
