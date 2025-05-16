@@ -162,7 +162,7 @@ ingress:
   path: '{{ .Values.httpRelativePath }}'  # Path for the ingress
   servicePort: http  # Service port for the ingress
   annotations:  # Annotations for the ingress
-    cert-manager.io/cluster-issuer: keycloak-ca-issuer  # Cert-manager annotation for TLS
+    cert-manager.io/issuer: keycloak-ca-issuer  # Cert-manager annotation for TLS
   labels: {}  # Labels for the ingress
   tls: true  # Enable TLS for the ingress
   selfSigned: false  # Use self-signed certificates
