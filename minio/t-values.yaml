@@ -1,7 +1,6 @@
 tenant:
   name: myminio  # Nome del tenant MinIO
-  namespace: tenant-1  # Namespace in cui è installato il tenant 
-
+  namespace: tenant-1  # Namespace in cui è installato il tenant
 
   image:
     repository: quay.io/minio/minio  # Repository dell'immagine Docker di MinIO
@@ -66,14 +65,10 @@ tenant:
     protocol: http  # Protocollo per le metriche
 
   certificate:
-    externalCaCertSecret: 
-#      - name: operator-ca-tls-keycloak
-#        type: generic
+    externalCaCertSecret: []
     externalCertSecret: # Secret per certificati esterni
       - name: myminio-tls
         type: generic
-#      - name: keycloak-tls-custom
-#        type: generic
     requestAutoCert: false  # Richiedi certificati automatici
     certConfig: {}  # Configurazione aggiuntiva per i certificati
 
@@ -141,7 +136,16 @@ ingress:
     host: minio-console.local  # Host per la console
     path: /
     pathType: Prefix  # Tipo di percorso
-
+identity:
+    openid:
+      enabled: true
+      provider: "https://keycloak.local/realms/MinIO/.well-known/openid-configuration" # URL del keycloak realm
+      clientId: "minio-client"
+      clientSecret: "UySDgZLFW9GSWjtwVMx4yxEnpMkqD42" # Client secret del client MinIO
+      redirectUri: "https://minio-console.local/oauth_callback"
+      claimName: "policy" # Assuming Keycloak groups are used for policy mapping
+      scopes: ["openid", "profile", "email"] # Scopes richiesti
+      redirectUriDynamic: true # Abilita il redirect dinamico
 
 
 

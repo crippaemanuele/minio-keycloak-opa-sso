@@ -318,7 +318,7 @@ keycloakConfigCli:
                 "enabled": true,
                 "alwaysDisplayInConsole": true,
                 "clientAuthenticatorType": "client-secret",
-                "secret": "**********",
+                "secret": "UySDgZLFW9GSWjtwVMx4yxEnpMkqD4",
                 "redirectUris": [
                   "https://minio-console.local/oauth_callback"
                 ],
