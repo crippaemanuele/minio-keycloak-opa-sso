@@ -404,14 +404,14 @@ keycloakConfigCli:
         "users":[  
            {
               "username":"amministratore",
-              "email":"",
+              "email":"amministratore@test.com",
               "enabled":true,
               "firstName":"Amministratore",
               "lastName":"Amministratore",
               "credentials":[
                  {
                     "type":"password",
-                    "value":"aministratore_pass"
+                    "value":"amministratore_pass"
                  }
               ],
               "groups":[
@@ -420,7 +420,7 @@ keycloakConfigCli:
            },
            {
               "username":"utente",
-              "email":"",
+              "email":"utente@test.com",
               "enabled":true,
               "firstName":"Utente",
               "lastName":"Utente",
