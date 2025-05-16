@@ -25,77 +25,47 @@ configura_cert_manager() {
 }
 
 configura_certificati(){
-  #KEYCLOAK
-  echo 30
-  kubectl apply -f certs/keycloak/keycloak-ca-certificate.yaml
-  echo 32
-  kubectl apply -f certs/keycloak/keycloak-ca-issuer.yaml
-  echo 34
-  kubectl wait --for=create secret keycloak-ca-tls -n keycloak
-  kubectl get secrets -n keycloak keycloak-ca-tls \
-    -o=jsonpath='{.data.ca\.crt}' | base64 -d > keycloak-ca.crt
-  echo 38
-  kubectl create secret generic keycloak-ca-tls \
-    --from-file=keycloak-ca.crt -n cert-manager
-  #MINIO-OPERATOR
-  echo 42
-  kubectl apply -f certs/minio/operator-ca-tls-secret.yaml
-  echo 44
-  kubectl apply -f certs/minio/operator-ca-issuer.yaml
-  echo 46
-  kubectl apply -f certs/minio/sts-tls-certificate.yaml
-  #MINIO-TENANT
-  echo 49
-  kubectl apply -f certs/minio/tenant-1-ca-certificate.yaml
-  echo 51
-  kubectl apply -f certs/minio/tenant-1-ca-issuer.yaml
-  echo 53
-  kubectl apply -f certs/minio/tenant-1-minio-certificate.yaml
-  kubectl wait --for=create secret tenant-1-ca-tls -n tenant-1
-  echo 56
-  kubectl get secrets -n tenant-1 tenant-1-ca-tls \
-    -o=jsonpath='{.data.ca\.crt}' | base64 -d > minio-ca.crt
-  echo 59
-  kubectl create secret generic tenant-1-ca-tls \
-    --from-file=minio-ca.crt -n cert-manager
-  # Estrai e decodifica i dati in file temporanei
-  mkdir ./tmp
-  kubectl wait --for=create secret myminio-tls -n tenant-1
-  echo 65
-  kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/m_public.crt
-  echo 67
-  kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/m_private.key
-  # Crea il nuovo secret mantenendo la formattazione esatta
-  echo 70
-  kubectl create secret generic myminio-tls-custom \
-    --from-file=public.crt=tmp/m_public.crt \
-    --from-file=private.key=tmp/m_private.key \
-    -n tenant-1
+  # --- KEYCLOAK ---
+  kubectl apply -f certs/keycloak/keycloak-ca-certificate.yaml  # Applica CA Keycloak
+  kubectl apply -f certs/keycloak/keycloak-ca-issuer.yaml       # Applica issuer Keycloak
+  kubectl wait --for=create secret keycloak-ca-tls -n keycloak  # Attendi secret CA Keycloak
+  kubectl get secrets -n keycloak keycloak-ca-tls -o=jsonpath='{.data.ca\.crt}' | base64 -d > keycloak-ca.crt  # Estrai CA Keycloak
+  kubectl create secret generic keycloak-ca-tls --from-file=keycloak-ca.crt -n cert-manager  # Secret CA Keycloak per cert-manager
 
-  # Aggiungi public.crt e private.key al secret myminio-tls
-  echo 77
+  # --- MINIO OPERATOR ---
+  kubectl apply -f certs/minio/operator-ca-tls-secret.yaml      # Secret CA Operator
+  kubectl apply -f certs/minio/operator-ca-issuer.yaml          # Issuer Operator
+  kubectl apply -f certs/minio/sts-tls-certificate.yaml         # Certificato TLS Operator
+
+  # --- MINIO TENANT ---
+  kubectl apply -f certs/minio/tenant-1-ca-certificate.yaml     # CA Tenant
+  kubectl apply -f certs/minio/tenant-1-ca-issuer.yaml          # Issuer Tenant
+  kubectl apply -f certs/minio/tenant-1-minio-certificate.yaml  # Certificato Tenant
+  kubectl wait --for=create secret tenant-1-ca-tls -n tenant-1  # Attendi secret CA Tenant
+  kubectl get secrets -n tenant-1 tenant-1-ca-tls -o=jsonpath='{.data.ca\.crt}' | base64 -d > minio-ca.crt  # Estrai CA Tenant
+  kubectl create secret generic tenant-1-ca-tls --from-file=minio-ca.crt -n cert-manager  # Secret CA Tenant per cert-manager
+
+  # --- ESTRAZIONE E PATCH DEI CERTIFICATI ---
+  mkdir ./tmp  # Crea cartella temporanea
+  kubectl wait --for=create secret myminio-tls -n tenant-1  # Attendi secret TLS MinIO
+  kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/m_public.crt  # Estrai cert pubblico MinIO
+  kubectl get secret myminio-tls -n tenant-1 -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/m_private.key # Estrai chiave privata MinIO
+  kubectl create secret generic myminio-tls-custom --from-file=public.crt=tmp/m_public.crt --from-file=private.key=tmp/m_private.key -n tenant-1  # Secret custom MinIO
   kubectl patch secret myminio-tls -n tenant-1 --type='json' -p='[
     {"op": "add", "path": "/data/public.crt", "value":"'"$(cat tmp/m_public.crt | base64 -w 0)"'"},
     {"op": "add", "path": "/data/private.key", "value":"'"$(cat tmp/m_private.key | base64 -w 0)"'"}
-  ]'
+  ]'  # Aggiungi public.crt e private.key al secret originale
 
-  # Estrai e decodifica i dati in file temporanei
-  kubectl wait --for=create secret keycloak-tls -n keycloak
-  echo 85
-  kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/k_public.crt
-  echo 87
-  kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/k_private.key
-  # Crea il nuovo secret mantenendo la formattazione esatta
-  echo 90
-  kubectl create secret generic keycloak-tls-custom \
-    --from-file=public.crt=tmp/k_public.crt \
-    --from-file=private.key=tmp/k_private.key \
-    -n tenant-1
-  # Pulisci i file temporanei 
-  rm -rf ./tmp
+  # --- KEYCLOAK TLS PER TENANT ---
+  kubectl wait --for=create secret keycloak-tls -n keycloak  # Attendi secret TLS Keycloak
+  kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/k_public.crt  # Estrai cert pubblico Keycloak
+  kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/k_private.key # Estrai chiave privata Keycloak
+  kubectl create secret generic keycloak-tls-custom --from-file=public.crt=tmp/k_public.crt --from-file=private.key=tmp/k_private.key -n tenant-1  # Secret custom Keycloak
 
-  #Creazione bundle
-  kubectl create -f trust-manager/bundle.yaml
+  rm -rf ./tmp  # Pulisci cartella temporanea
+
+  # --- BUNDLE TRUST MANAGER ---
+  kubectl create -f trust-manager/bundle.yaml  # Crea bundle trust-manager
 }
 
 # Funzione per configurare Keycloak
