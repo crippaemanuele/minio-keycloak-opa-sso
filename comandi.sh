@@ -2,7 +2,7 @@
 inizializzazione() {
   echo "Eseguendo inizializzazione..."
   #cd Projects/minio-keycloak-sso/
-  #minikube start --driver=docker --cpus=3 --memory=6144
+  minikube start --driver=docker --cpus=3 --memory=6144
   minikube addons enable ingress
   kubectl create ns cert-manager
   kubectl create ns keycloak
