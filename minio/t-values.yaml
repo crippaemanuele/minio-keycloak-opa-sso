@@ -95,7 +95,31 @@ tenant:
 
   logging: {}  # Configurazione del logging
   serviceMetadata: {}  # Metadati per i servizi
-  env: []  # Variabili di ambiente aggiuntive
+  env: # Variabili di ambiente aggiuntive, se non funziona aggiungere _PRIMARY_IAM ai primi tre
+  #VARIABILI DI AMBIENTE PER KEYCLOAK OIDC
+    - name: MINIO_IDENTITY_OPENID_VENDOR
+      value: "keycloak"  # URL del provider OpenID
+    - name: MINIO_IDENTITY_OPENID_KEYCLOAK_ADMIN_URL
+      value: "https://keycloak.local/admin"
+    - name: MINIO_IDENTITY_OPENID_KEYCLOAK_REALM
+      value: "MinIO"  # Nome del realm Keycloak
+    - name: MINIO_IDENTITY_OPENID_CONFIG_URL
+      value: "https://keycloak.local/auth/realms/MinIO/.well-known/openid-configuration"  # URL di configurazione OpenID
+    - name: MINIO_IDENTITY_OPENID_CLIENT_ID
+      value: "minio-client"
+    - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+      value: "UySDgZLFW9GSWjtwVMx4yxEnpMkqD4"  # Segreto del client OpenID
+    - name: MINIO_IDENTITY_OPENID_CLAIM_NAME
+      value: "policy"  # Nome del claim OpenID
+    - name: MINIO_IDENTITY_OPENID_DISPLAY_NAME
+      value: "SSO"
+    - name: MINIO_IDENTITY_OPENID_SCOPES
+      value: "openid,email,profile"  # Scopes OpenID
+    - name: MINIO_BROWSER_REDIRECT_URL
+      value: "https://minio-console.local/oauth_callback"  # URL di reindirizzamento del browser
+    - name: MINIO_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
+      value: "on"
+    
   priorityClassName: ""  # Nome della classe di priorità (vuoto se non necessario)
   additionalVolumes:  # Volumi aggiuntivi
     - name: ca
@@ -136,16 +160,6 @@ ingress:
     host: minio-console.local  # Host per la console
     path: /
     pathType: Prefix  # Tipo di percorso
-identity:
-    openid:
-      enabled: true
-      provider: "https://keycloak.local/realms/MinIO/.well-known/openid-configuration" # URL del keycloak realm
-      clientId: "minio-client"
-      clientSecret: "UySDgZLFW9GSWjtwVMx4yxEnpMkqD42" # Client secret del client MinIO
-      redirectUri: "https://minio-console.local/oauth_callback"
-      claimName: "policy" # Assuming Keycloak groups are used for policy mapping
-      scopes: ["openid", "profile", "email"] # Scopes richiesti
-      redirectUriDynamic: true # Abilita il redirect dinamico
 
 
 
