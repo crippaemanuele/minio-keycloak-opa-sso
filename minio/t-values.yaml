@@ -104,7 +104,7 @@ tenant:
     - name: MINIO_IDENTITY_OPENID_KEYCLOAK_REALM
       value: "MinIO"  # Nome del realm Keycloak
     - name: MINIO_IDENTITY_OPENID_CONFIG_URL
-      value: "https://keycloak.local/auth/realms/MinIO/.well-known/openid-configuration"  # URL di configurazione OpenID
+      value: "https://keycloak.local/realms/MinIO/.well-known/openid-configuration"  # URL di configurazione OpenID
     - name: MINIO_IDENTITY_OPENID_CLIENT_ID
       value: "minio-client"
     - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
