@@ -1,5 +1,10 @@
 prerequisiti(){
   helm repo add opa-kube-mgmt https://open-policy-agent.github.io/kube-mgmt/charts
+  helm repo add minio-operator https://operator.min.io
+  helm repo add jetstack https://charts.jetstack.io
+  helm repo add bitnami https://charts.bitnami.com/bitnami
+  helm repo add trust-manager https://jetstack.github.io/trust-manager
+  helm repo update
 }
 # Funzione per l'inizializzazione
 inizializzazione() {
@@ -107,7 +112,7 @@ prerequisiti
 inizializzazione
 configura_cert_manager
 configura_certificati
-configura_keycloak
-configura_minio_operator
-configura_tenant_minio
+#configura_keycloak
+#configura_minio_operator
+#configura_tenant_minio
 configura_opa
