@@ -18,6 +18,9 @@ spec:
       name: "keycloak-ca-tls"
       key: "keycloak-ca.crt"
   - secret:
+      name: "opa-ca-tls"
+      key: "opa-ca.crt"
+  - secret:
       name: "tenant-1-ca-tls"
       key: "minio-ca.crt"
   - configMap:

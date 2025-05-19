@@ -3,9 +3,9 @@ prerequisiti(){
   helm repo add minio-operator https://operator.min.io
   helm repo add jetstack https://charts.jetstack.io
   helm repo add bitnami https://charts.bitnami.com/bitnami
-  helm repo add trust-manager https://jetstack.github.io/trust-manager
   helm repo update
 }
+
 # Funzione per l'inizializzazione
 inizializzazione() {
   echo "Eseguendo inizializzazione..."
@@ -16,6 +16,8 @@ inizializzazione() {
   kubectl create ns keycloak
   kubectl label namespace keycloak create-ca-bundle=true --overwrite=true
   kubectl create ns minio-operator
+  kubectl create ns opa
+  kubectl label namespace opa create-ca-bundle=true --overwrite=true
   kubectl create ns tenant-1
   kubectl label namespace tenant-1 create-ca-bundle=true --overwrite=true
 }
@@ -39,6 +41,14 @@ configura_certificati(){
   kubectl wait --for=create secret keycloak-ca-tls -n keycloak  # Attendi secret CA Keycloak
   kubectl get secrets -n keycloak keycloak-ca-tls -o=jsonpath='{.data.ca\.crt}' | base64 -d > keycloak-ca.crt  # Estrai CA Keycloak
   kubectl create secret generic keycloak-ca-tls --from-file=keycloak-ca.crt -n cert-manager  # Secret CA Keycloak per cert-manager
+  
+  # --- OPA ---
+  kubectl apply -f certs/opa/opa-ca-certificate.yaml  # Applica CA Keycloak
+  kubectl apply -f certs/opa/opa-ca-issuer.yaml       # Applica issuer Keycloak
+  kubectl wait --for=create secret opa-ca-tls -n opa  # Attendi secret CA Keycloak
+  kubectl get secrets -n opa opa-ca-tls -o=jsonpath='{.data.ca\.crt}' | base64 -d > opa-ca.crt  # Estrai CA Keycloak
+  kubectl create secret generic opa-ca-tls --from-file=opa-ca.crt -n cert-manager  # Secret CA Keycloak per cert-manager
+
 
   # --- MINIO OPERATOR ---
   kubectl apply -f certs/minio/operator-ca-tls-secret.yaml      # Secret CA Operator
@@ -63,12 +73,6 @@ configura_certificati(){
     {"op": "add", "path": "/data/public.crt", "value":"'"$(cat tmp/m_public.crt | base64 -w 0)"'"},
     {"op": "add", "path": "/data/private.key", "value":"'"$(cat tmp/m_private.key | base64 -w 0)"'"}
   ]'  # Aggiungi public.crt e private.key al secret originale
-
-  # --- KEYCLOAK TLS PER TENANT ---
-  kubectl wait --for=create secret keycloak-tls -n keycloak  # Attendi secret TLS Keycloak
-  kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.crt}' | base64 -d > tmp/k_public.crt  # Estrai cert pubblico Keycloak
-  kubectl get secret keycloak-tls -n keycloak -o jsonpath='{.data.tls\.key}' | base64 -d > tmp/k_private.key # Estrai chiave privata Keycloak
-  kubectl create secret generic keycloak-tls-custom --from-file=public.crt=tmp/k_public.crt --from-file=private.key=tmp/k_private.key -n tenant-1  # Secret custom Keycloak
 
   rm -rf ./tmp  # Pulisci cartella temporanea
 
@@ -95,24 +99,26 @@ configura_minio_operator() {
 # Funzione per configurare il tenant di MinIO
 configura_tenant_minio() {
   kubectl wait --for=condition=Ready pod/keycloak-0 -n keycloak  # Attendi che Keycloak sia pronto
+  kubectl wait --for=condition=Ready pods -n opa # Attendi che Keycloak sia pronto
   echo "Configurando il tenant di MinIO..."
   helm upgrade --install myminio minio-operator/tenant \
     --namespace tenant-1 --create-namespace \
     -f minio/t-values.yaml
 }
 
+# Funzione per configurare OPA
 configura_opa() {
   echo "Configurando OPA..."
-  helm upgrade --install opa-kube-mgmt opa-kube-mgmt/opa-kube-mgmt --version 9.0.1 \
-    --namespace opa-kube-mgmt --create-namespace \
-    -f opa-kube-mgmt/values.yaml
+  helm upgrade --install opa-kube-mgmt opa-kube-mgmt/opa-kube-mgmt \
+    --namespace opa --create-namespace \
+    -f opa/values.yaml
 }
 
 prerequisiti
 inizializzazione
 configura_cert_manager
 configura_certificati
-#configura_keycloak
-#configura_minio_operator
-#configura_tenant_minio
+configura_keycloak
 configura_opa
+configura_minio_operator
+configura_tenant_minio

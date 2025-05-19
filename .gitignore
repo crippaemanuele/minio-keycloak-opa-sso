@@ -1,6 +1,7 @@
 # Escludi i certificati CA
 keycloak-ca.crt
 minio-ca.crt
+opa-ca.crt
 problema-attuale.txt
 
 # Ignora le cartelle e tutti i loro contenuti
