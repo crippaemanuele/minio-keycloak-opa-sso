@@ -86,6 +86,7 @@ configura_minio_operator() {
 
 # Funzione per configurare il tenant di MinIO
 configura_tenant_minio() {
+  kubectl wait --for=condition=Ready pod/keycloak-0 -n keycloak  # Attendi che Keycloak sia pronto
   echo "Configurando il tenant di MinIO..."
   helm upgrade --install myminio minio-operator/tenant \
     --namespace tenant-1 --create-namespace \
