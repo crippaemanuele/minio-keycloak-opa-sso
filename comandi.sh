@@ -1,3 +1,6 @@
+prerequisiti(){
+  helm repo add opa-kube-mgmt https://open-policy-agent.github.io/kube-mgmt/charts
+}
 # Funzione per l'inizializzazione
 inizializzazione() {
   echo "Eseguendo inizializzazione..."
@@ -93,9 +96,18 @@ configura_tenant_minio() {
     -f minio/t-values.yaml
 }
 
+configura_opa() {
+  echo "Configurando OPA..."
+  helm upgrade --install opa-kube-mgmt opa-kube-mgmt/opa-kube-mgmt --version 9.0.1 \
+    --namespace opa-kube-mgmt --create-namespace \
+    -f opa-kube-mgmt/values.yaml
+}
+
+prerequisiti
 inizializzazione
 configura_cert_manager
 configura_certificati
 configura_keycloak
 configura_minio_operator
 configura_tenant_minio
+configura_opa

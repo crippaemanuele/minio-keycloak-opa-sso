@@ -1,0 +1,300 @@
+# Default values for opa.
+# -----------------------
+#
+# OPA configuration file. See https://www.openpolicyagent.org/docs/configuration.html for more details.
+opa: {} # Configurazione OPA (Open Policy Agent), vedi https://www.openpolicyagent.org/docs/configuration.html
+
+# Setup the webhook using cert-manager
+certManager:
+  enabled: false # Abilita l'uso di cert-manager per la gestione dei certificati webhook
+  rootCACertificateDuration: 43800h # Durata del certificato CA root (5 anni)
+  servingCertificateDuration: 8760h # Durata del certificato di servizio (1 anno)
+
+# Expose the prometheus scraping endpoint
+prometheus:
+  enabled: false # Espone l'endpoint Prometheus per lo scraping delle metriche
+  port: 8182 # Porta su cui esporre le metriche Prometheus
+
+## ServiceMonitor consumed by prometheus-operator
+serviceMonitor:
+  ## If the operator is installed in your cluster, set to true to create a Service Monitor Entry
+  enabled: false # Crea una risorsa ServiceMonitor per Prometheus Operator se abilitato
+  interval: "15s" # Intervallo di scraping per Prometheus
+  ## Namespace in which the service monitor is created
+  # namespace: monitoring  # Namespace dove creare il ServiceMonitor (decommenta per usarlo)
+  # Added to the ServiceMonitor object so that prometheus-operator is able to discover it
+  ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+  additionalLabels: {} # Etichette aggiuntive per il ServiceMonitor
+
+# Annotations in the deployment template
+annotations: {} # Annotazioni da aggiungere al Deployment di OPA
+
+# Bootstrap policies to load upon startup
+# Define policies in the form of:
+# <policyName> : |-
+#   <regoBody>
+# For example, to mask the entire input body in the decision logs:
+# bootstrapPolicies:
+#   log: |-
+#     package system.log
+#     mask["/input"]
+bootstrapPolicies: {} # Policy rego da caricare all'avvio, es: <nome>: |-\n  <rego>
+
+# Admission controller configuration.
+admissionController:
+  enabled: false # Abilita l'admission controller OPA per Kubernetes
+
+  # To enforce mutating policies, change to MutatingWebhookConfiguration.
+  kind: ValidatingWebhookConfiguration # Tipo di webhook (Validating o Mutating)
+
+  # To set annotations on all admissionController resources (Secret/Certificate/Issuer/AdmissionController)
+  # annotations:
+  #   example: value
+  # annotations: {}  # Annotazioni per tutte le risorse dell'admission controller
+
+  # To _fail closed_ on failures, change to Fail. During initial testing, we
+  # recommend leaving the failure policy as Ignore.
+  failurePolicy: Ignore # Policy in caso di errore (Ignore o Fail)
+
+  # Adds a namespace selector to the admission controller webhook
+  namespaceSelector:
+    matchExpressions:
+    - { key: openpolicyagent.org/webhook, operator: NotIn, values: [ ignore ] } # Esclude i namespace con questa label
+
+  # SideEffectClass for the webhook, setting to NoneOnDryRun enables dry-run.
+  # Only None and NoneOnDryRun are permitted for admissionregistration.k8s.io/v1.
+  sideEffect: None # Classe di side effect per il webhook (None o NoneOnDryRun)
+
+  # To restrict the kinds of operations and resources that are subject to OPA
+  # policy checks, see the settings below. By default, all resources and
+  # operations are subject to OPA policy checks.
+  rules:
+  - operations: [ "*" ] # Operazioni soggette a controllo (tutte)
+    apiGroups: [ "*" ] # Tutti i gruppi API
+    apiVersions: [ "*" ] # Tutte le versioni API
+    resources: [ "*" ] # Tutte le risorse
+
+# The helm Chart will automatically generate a CA and server certificate for
+# the OPA. If you want to supply your own certificates, set the field below to
+# false and add the PEM encoded CA certificate and server key pair below.
+#
+# WARNING: The common name name in the server certificate MUST match the
+# hostname of the service that exposes the OPA to the apiserver. For example.
+# if the service name is created in the "default" nanamespace with name "opa"
+# the common name MUST be set to "opa.default.svc".
+#
+# If the common name is not set correctly, the apiserver will refuse to
+# communicate with the OPA.
+generateCerts: true # Genera automaticamente CA e certificati server per OPA
+CA: "" # Certificato CA personalizzato (se generateCerts è false)
+cert: "" # Certificato server personalizzato (se generateCerts è false)
+key: "" # Chiave privata server personalizzata (se generateCerts è false)
+
+# Controls a PodDisruptionBudget for the OPA pod. Suggested use if having opa
+# always running for admission control is important
+podDisruptionBudget:
+  enabled: false # Abilita un PodDisruptionBudget per OPA
+  minAvailable: 1 # Numero minimo di pod disponibili
+# maxUnavailable: 1  # Numero massimo di pod non disponibili
+
+authz:
+  # Disable if you don't want authorization.
+  # Mostly useful for debugging.
+  enabled: true # Abilita l'autorizzazione (authz) per OPA
+  # Used for setting the mgmt token used for authz instead of auto generated default
+  # mgmtToken:  # Token di gestione personalizzato (opzionale)
+  #    secretName: nome del secret
+  #    secretKey: chiave del secret (default: mgmtToken)
+
+  # Use hostNetwork setting on OPA pod
+hostNetwork:
+  enabled: false # Abilita l'uso di hostNetwork per il pod OPA
+
+# OPA docker image configuration.
+image:
+  repository: openpolicyagent/opa # Repository dell'immagine Docker OPA
+  tag: 1.3.0 # Tag dell'immagine Docker OPA
+  pullPolicy: IfNotPresent # Politica di pull dell'immagine
+
+# One or more secrets to be used when pulling images
+imagePullSecrets: [] # Segreti per il pull delle immagini Docker
+# - registrySecretName
+
+# Should OPA use TLS or not.
+useHttps: true # Abilita HTTPS per OPA
+
+# Port to which the opa pod will bind itself,
+port: 8181 # Porta su cui OPA ascolta
+
+extraArgs: [] # Argomenti extra da passare al container OPA
+
+# Extra environment variables to be loaded into the OPA container
+extraEnv: [] # Variabili d'ambiente extra per il container OPA
+
+mgmt:
+  enabled: true # Abilita il sidecar kube-mgmt per la sincronizzazione con Kubernetes
+  image:
+    repository: openpolicyagent/kube-mgmt # Repository dell'immagine kube-mgmt
+    tag: "" # Tag dell'immagine kube-mgmt (vuoto per usare quello di default)
+    pullPolicy: IfNotPresent # Politica di pull dell'immagine
+  extraArgs: [] # Argomenti extra per kube-mgmt
+  extraEnv: [] # Variabili d'ambiente extra per kube-mgmt
+  resources: {} # Risorse per kube-mgmt
+
+  # if empty - the current namespaces is watched
+  # if `*` - all namespaces are watched
+  namespaces: [] # Namespace da osservare (vuoto: namespace corrente, * : tutti)
+
+  # kube-mgmt container will wait until OPA container comes to running state.
+  # Configure values for the startup probe, where kube-mgmt queries for the health
+  # of OPA container before it starts.
+  startupProbe:
+    failureThreshold: 5 # Soglia di fallimento per la startup probe
+    httpGet:
+      path: /health # Path di health check
+      port: 8181 # Porta di health check
+      scheme: HTTPS # Protocollo di health check
+    initialDelaySeconds: 20 # Ritardo iniziale
+    successThreshold: 1 # Soglia di successo
+    timeoutSeconds: 10 # Timeout
+
+  data:
+    enabled: true # Abilita la replica dei dati da Kubernetes
+  policies:
+    enabled: true # Abilita la replica delle policy da Kubernetes
+  # NOTE IF you use these, remember to update the RBAC rules below to allow
+  #      permissions to replicate these things
+  replicate:
+    cluster: [] # Risorse di cluster da replicare
+    #     - [group/]version/resource
+    namespace: [] # Risorse di namespace da replicare
+    #     - [group/]version/resource
+    path: kubernetes # Path dove replicare i dati/policy
+
+    ignoreNs: [] # Namespace da ignorare
+
+# Log level for OPA ('debug', 'info', 'error') (app default=info)
+logLevel: info # Livello di log di OPA (debug, info, error)
+
+# Log format for OPA ('text', 'json') (app default=text)
+logFormat: json # Formato di log di OPA (text, json)
+
+# Number of OPA replicas to deploy. OPA maintains an eventually consistent
+# cache of policies and data. If you want high availability you can deploy two
+# or more replicas.
+replicas: 1 # Numero di repliche OPA da distribuire
+
+# To control how the OPA is scheduled on the cluster, set the affinity,
+# tolerations and nodeSelector values below. For example, to deploy OPA onto
+# the master nodes, 1 replica per node:
+#
+# affinity:
+#   podAntiAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#     - labelSelector:
+#         matchExpressions:
+#         - key: "app"
+#           operator: In
+#           values:
+#           - opa
+#       topologyKey: "kubernetes.io/hostname"
+# tolerations:
+# - key: "node-role.kubernetes.io/master"
+#   effect: NoSchedule
+#   operator: Exists
+# nodeSelector:
+#   kubernetes.io/role: "master"
+affinity: {} # Affinità per la schedulazione dei pod
+tolerations: [] # Tollerazioni per la schedulazione dei pod
+nodeSelector: {} # Selettore dei nodi per la schedulazione dei pod
+
+# To control the CPU and memory resource limits and requests for OPA, set the
+# field below.
+resources: {} # Risorse CPU/memoria per OPA
+
+rbac:
+  # should ClusterRole for kube-mgmt be created
+  create: true # Crea ClusterRole per kube-mgmt
+  # extra rules to be added to a ClusterRole
+  extraRules: []
+    # Regole RBAC aggiuntive
+    # - apiGroups: [""]
+    #   resources: ["configmaps"]
+    #   verbs: ["*"]
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true # Crea un ServiceAccount dedicato
+  # Annotations for the ServiceAccount
+  annotations: {} # Annotazioni per il ServiceAccount
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+    # Nome del ServiceAccount (vuoto per generarlo automaticamente)
+
+    # This proxy allows opa to make Kubernetes SubjectAccessReview checks against the
+    # Kubernetes API. You can get a rego function at github.com/open-policy-agent/library
+sar:
+  enabled: false # Abilita il proxy per SubjectAccessReview
+  image:
+    repository: lachlanevenson/k8s-kubectl # Repository dell'immagine per il proxy SAR
+    tag: latest # Tag dell'immagine
+    pullPolicy: IfNotPresent # Politica di pull dell'immagine
+  resources: {} # Risorse per il proxy SAR
+
+# Set a priorityClass using priorityClassName
+# priorityClassName:
+
+# Timeout for a webhook call in seconds.
+# Starting in kubernetes 1.14 you can set the timeout and it is
+# encouraged to use a small timeout for webhooks. If the webhook call times out, the request
+# the request is handled according to the webhook'sfailure policy.
+# timeoutSeconds: 20  # Timeout per le chiamate webhook
+
+securityContext:
+  enabled: false # Abilita il securityContext per il pod
+  runAsNonRoot: true # Esegui come utente non-root
+  runAsUser: 1 # UID dell'utente
+
+deploymentStrategy: {}
+  # Strategia di deployment (es. RollingUpdate)
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+  # type: RollingUpdate
+
+extraContainers: [] # Contenitori aggiuntivi da aggiungere al pod OPA
+## Additional containers to be added to the opa pod.
+# - name: example-app
+#   image: example/example-app:latest
+#   args:
+#     - "run"
+#     - "--port=11811"
+#     - "--config=/etc/example-app-conf/config.yaml"
+#     - "--opa-endpoint=https://localhost:443"
+#   ports:
+#     - name: http
+#       containerPort: 11811
+#       protocol: TCP
+#   volumeMounts:
+#     - name: example-app-auth-config
+#       mountPath: /etc/example-app-conf
+
+extraVolumes: [] # Volumi aggiuntivi da montare nel pod OPA
+## Additional volumes to the opa pod.
+# - name: example-app-auth-config
+#   secret:
+#     secretName: example-app-auth-config
+
+extraVolumeMounts: [] # Mount point per i volumi aggiuntivi
+## Mounting config for using the additional volumes
+#  - name: example-app-auth-config
+#    mountPath: /mount/path
+
+extraPorts: [] # Porte aggiuntive da esporre dal servizio OPA
+
+## Additional ports to the opa services. Useful to expose extra container ports.
+# - port: 11811
+#   protocol: TCP
+#   name: http
+#   targetPort: http
