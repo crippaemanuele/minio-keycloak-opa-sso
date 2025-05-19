@@ -4,6 +4,7 @@ prerequisiti(){
   helm repo add jetstack https://charts.jetstack.io
   helm repo add bitnami https://charts.bitnami.com/bitnami
   helm repo update
+  cd Projects/minio-keycloak-sso/
   sleep 3
   clear
 }
@@ -11,7 +12,6 @@ prerequisiti(){
 # Funzione per l'inizializzazione
 inizializzazione() {
   echo "Eseguendo inizializzazione..."
-  cd Projects/minio-keycloak-sso/
   minikube start --driver=docker --cpus=3 --memory=6144
   minikube addons enable ingress
   kubectl create ns cert-manager
@@ -134,7 +134,7 @@ inizializzazione
 configura_cert_manager
 configura_certificati
 #configura_keycloak
-configura_opa
+#configura_opa
 #configura_minio_operator
 #configura_tenant_minio
 echo "Tutte le configurazioni sono state completate con successo!"
