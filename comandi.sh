@@ -80,11 +80,12 @@ configura_certificati(){
   ]'  # Aggiungi public.crt e private.key al secret originale
 
   rm -rf ./tmp  # Pulisci cartella temporanea
+  sleep 30
 
   # --- BUNDLE TRUST MANAGER ---
   kubectl create -f trust-manager/bundle.yaml  # Crea bundle trust-manager
   sleep 3
-  clear
+  #clear
 }
 
 # Funzione per configurare Keycloak
@@ -92,7 +93,6 @@ configura_keycloak() {
   echo "Configurando Keycloak..."
   helm upgrade --install keycloak bitnami/keycloak --namespace keycloak --create-namespace -f keycloak/values.yaml
   KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d)
-  echo "Password di Keycloak: $KEYCLOAK_PASSWORD"
   sleep 3
   clear
 }
@@ -101,8 +101,8 @@ configura_keycloak() {
 configura_opa() {
   echo "Configurando OPA..."
   helm upgrade --install opa-kube-mgmt opa-kube-mgmt/opa-kube-mgmt \
-    --namespace opa --create-namespace #\
-#    -f opa/values.yaml
+    --namespace opa --create-namespace \
+    -f opa/values.yaml
   sleep 3
   clear
 }
@@ -133,12 +133,12 @@ prerequisiti
 inizializzazione
 configura_cert_manager
 configura_certificati
-#configura_keycloak
+configura_keycloak
 #configura_opa
 #configura_minio_operator
 #configura_tenant_minio
-echo "Tutte le configurazioni sono state completate con successo!"
-echo "Per accedere a Keycloak, utilizza l'URL: http://keycloak.local"
-echo "Password di Keycloak: $KEYCLOAK_PASSWORD"
-echo "Per accedere a MinIO, utilizza l'URL: http://minio.local"
-echo "Per accedere a OPA, utilizza l'URL: http://opa.local"
+#echo "Tutte le configurazioni sono state completate con successo!"
+#echo "Per accedere a Keycloak, utilizza l'URL: http://keycloak.local"
+#echo "Password di Keycloak: $KEYCLOAK_PASSWORD"
+#echo "Per accedere a MinIO, utilizza l'URL: http://minio.local"
+#echo "Per accedere a OPA, utilizza l'URL: http://opa.local"
