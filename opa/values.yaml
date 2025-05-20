@@ -1,8 +1,10 @@
 opa:
   image:
-      repository: openpolicyagent/opa
-      tag: latest
+    repository: openpolicyagent/opa
+    tag: latest
+
   enable: true
+
   service:
     enabled: true
     name: opa
@@ -29,8 +31,29 @@ opa:
     - "--tls-private-key-file=/certs/tls.key"
     - "--log-level=info"
 
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Cambia se usi un altro issuer
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    hosts:
+      - host: opa.mydomain.example  # Cambia con il tuo dominio
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+          - opa.mydomain.example
+        secretName: opa-ingress-tls  # gestito da cert-manager
+
 kubeMgmt:
   enabled: true
+  image:
+    repository: openpolicyagent/kube-mgmt
+    tag: latest
   sync:
     configMaps: true
     secrets: false
+    namespaces: []
+  replicaCount: 1
