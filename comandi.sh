@@ -98,7 +98,8 @@ configura_keycloak() {
 configura_opa() {
   echo "Configurando OPA..."
   helm install gatekeeper/gatekeeper --name-template=gatekeeper \
-    --namespace gatekeeper-system --create-namespace
+    --namespace gatekeeper-system --create-namespace \
+    -f opa/values.yaml
   sleep 3
   clear
 }
