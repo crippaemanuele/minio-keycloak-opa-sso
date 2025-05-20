@@ -97,9 +97,7 @@ configura_keycloak() {
 
 configura_opa() {
   echo "Configurando OPA..."
-  helm install gatekeeper/gatekeeper --name-template=gatekeeper \
-    --namespace opa --create-namespace \
-    -f opa/values.yaml
+  #utilizzare opa-kube-mgmt
   sleep 3
   clear
 }
@@ -126,8 +124,12 @@ configura_tenant_minio() {
 
 terminazione() {
   echo "Pulendo il cluster..."
-  kubectl get pods --all-namespaces --field-selector=status.phase=Failed -o name | xargs kubectl delete
-  kubectl get pods --all-namespaces --field-selector=status.phase=Succeeded -o name | xargs kubectl delete
+  kubectl get pods --all-namespaces --field-selector=status.phase=Failed -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name' --no-headers | while read ns name; do
+    kubectl delete pod "$name" -n "$ns"
+  done
+  kubectl get pods --all-namespaces --field-selector=status.phase=Succeeded -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name' --no-headers | while read ns name; do
+    kubectl delete pod "$name" -n "$ns"
+  done
   echo "Tutte le configurazioni sono state completate con successo!"
   echo "Per accedere a Keycloak, utilizza l'URL: http://keycloak.local"
   echo "Password di Keycloak: $KEYCLOAK_PASSWORD"
