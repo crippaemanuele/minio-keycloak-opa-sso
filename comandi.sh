@@ -100,6 +100,7 @@ configura_opa() {
   helm install opa open-policy-agent/kube-mgmt \
     --namespace opa --create-namespace \
     -f opa/values.yaml
+  #kubectl apply -f opa/ingress.yaml
   sleep 3
   clear
 }
