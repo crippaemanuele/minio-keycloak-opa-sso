@@ -1,7 +1,7 @@
 prerequisiti() {
   helm repo add jetstack https://charts.jetstack.io
   helm repo add bitnami https://charts.bitnami.com/bitnami
-  helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
+  helm repo add open-policy-agent https://open-policy-agent.github.io/kube-mgmt
   helm repo add minio-operator https://operator.min.io
   helm repo update
   cd Projects/minio-keycloak-sso/
@@ -97,7 +97,9 @@ configura_keycloak() {
 
 configura_opa() {
   echo "Configurando OPA..."
-  #utilizzare opa-kube-mgmt
+  helm install opa open-policy-agent/kube-mgmt \
+    --namespace opa --create-namespace \
+    -f opa/values.yaml
   sleep 3
   clear
 }
