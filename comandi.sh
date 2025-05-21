@@ -97,7 +97,7 @@ configura_keycloak() {
 
 configura_opa() {
   echo "Configurando OPA..."
-  helm install opa opa/kube-mgmt \
+  helm install opa open-policy-agent/kube-mgmt \
     --namespace opa --create-namespace \
     -f opa/values.yaml
   #kubectl apply -f opa/ingress.yaml
