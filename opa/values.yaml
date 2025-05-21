@@ -6,7 +6,7 @@ opa: {}
 
 # Abilita il webhook tramite cert-manager
 certManager:
-  enabled: false
+  enabled: true
   rootCACertificateDuration: 43800h # 5 anni
   servingCertificateDuration: 8760h # 1 anno
 
@@ -39,7 +39,17 @@ annotations: {}
 #   log-input: |-
 #     package system.log
 #     mask["/input"]
-bootstrapPolicies: {}
+bootstrapPolicies:
+  admin-only-access: |-
+    package minio.authz
+
+    default allow = false
+
+    # Consente accesso completo solo all'utente admin
+    allow {
+      input.request.accessKey == "minio"
+    }
+
 
 # Configurazione dell'admission controller.
 admissionController:
@@ -117,7 +127,6 @@ imagePullSecrets: []
 
 # Abilita/disabilita TLS per OPA.
 useHttps: true
-
 # Porta su cui OPA ascolta.
 port: 8181
 
