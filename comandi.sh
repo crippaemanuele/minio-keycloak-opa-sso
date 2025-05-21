@@ -1,12 +1,12 @@
 prerequisiti() {
   helm repo add jetstack https://charts.jetstack.io
   helm repo add bitnami https://charts.bitnami.com/bitnami
-  helm repo add open-policy-agent https://open-policy-agent.github.io/kube-mgmt
+  helm repo add opa https://open-policy-agent.github.io/kube-mgmt/charts
   helm repo add minio-operator https://operator.min.io
   helm repo update
   cd Projects/minio-keycloak-sso/
   sleep 3
-  clear
+  
 }
 
 inizializzazione() {
@@ -22,7 +22,7 @@ inizializzazione() {
   kubectl create ns tenant-1
   kubectl label namespace tenant-1 create-ca-bundle=true --overwrite=true
   sleep 3
-  clear
+  
 }
 
 configura_cert_manager() {
@@ -35,7 +35,7 @@ configura_cert_manager() {
     -f trust-manager/values.yaml
   kubectl apply -f certs/selfsigned-root-clusterissuer.yaml
   sleep 3
-  clear
+  
 }
 
 configura_certificati() {
@@ -82,7 +82,7 @@ configura_certificati() {
   # --- BUNDLE TRUST MANAGER ---
   kubectl create -f trust-manager/bundle.yaml
   sleep 3
-  #clear
+  #
 }
 
 configura_keycloak() {
@@ -92,7 +92,7 @@ configura_keycloak() {
     -f keycloak/values.yaml
   KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d)
   sleep 3
-  clear
+  
 }
 
 configura_opa() {
@@ -102,7 +102,7 @@ configura_opa() {
     -f opa/values.yaml
   #kubectl apply -f opa/ingress.yaml
   sleep 3
-  clear
+  
 }
 
 configura_minio_operator() {
@@ -111,7 +111,7 @@ configura_minio_operator() {
     --namespace minio-operator --create-namespace \
     -f minio/o-values.yaml
   sleep 3
-  clear
+  
 }
 
 configura_tenant_minio() {
@@ -122,7 +122,7 @@ configura_tenant_minio() {
     --namespace tenant-1 --create-namespace \
     -f minio/t-values.yaml
   sleep 3
-  clear
+  
 }
 
 terminazione() {
