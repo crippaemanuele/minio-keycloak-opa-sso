@@ -5,27 +5,22 @@ metadata:
   namespace: opa
   labels:
     openpolicyagent.org/policy: rego
+terms: []
 data:
   minio.rego: |
     package minio.authz
-    default allow = false
 
-    allow {
+    default allow := false
+
+    allow if {
       input.subject.groups[_] == "storage-readers"
       input.action == "read"
       input.resource.type == "object"
     }
-  terms: |
-    # Add your terms here if required by your application
-    # Example:
-    # - term1
-    # - term2
   minio_admin_access.rego: |
     package minio.authz
 
-    default allow = false
-
     # Consenti tutte le azioni solo all'utente amministratore "minio"
-    allow {
+    allow if {
       input.user == "minio"
     }
