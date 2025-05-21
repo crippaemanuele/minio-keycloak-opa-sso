@@ -15,3 +15,8 @@ data:
       input.action == "read"
       input.resource.type == "object"
     }
+  terms: |
+    # Add your terms here if required by your application
+    # Example:
+    # - term1
+    # - term2
