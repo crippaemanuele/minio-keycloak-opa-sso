@@ -294,12 +294,12 @@ extraContainers: []
 #       mountPath: /etc/example-app-conf
 
 extraVolumes:
-  - name: minio-admin-policy
+  - name: esempio
     configMap:
-      name: minio-admin-policy
+      name: esempio
 
 extraVolumeMounts:
-  - name: minio-admin-policy
+  - name: esempio
     mountPath: /policies
     readOnly: true
 ## Additional volumes to the opa pod.

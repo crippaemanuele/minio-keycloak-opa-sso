@@ -1,26 +1,23 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: minio-admin-policy
+  name: esempio
   namespace: opa
-  labels:
-    openpolicyagent.org/policy: rego
-terms: []
 data:
-  minio.rego: |
-    package minio.authz
+  esempio.rego: |
+    package httpapi.authz
 
-    default allow := false
+    import input
 
-    allow if {
-      input.subject.groups[_] == "storage-readers"
-      input.action == "read"
-      input.resource.type == "object"
+    default allow = false
+
+    # Allow the root user to perform any action.
+    allow if{
+      input.owner == true
     }
-  minio_admin_access.rego: |
-    package minio.authz
 
-    # Consenti tutte le azioni solo all'utente amministratore "minio"
-    allow if {
-      input.user == "minio"
+    # All other users may do anything other than call PutObject
+    allow if{
+      input.action != "s3:PutObject"
+      input.owner == false
     }
