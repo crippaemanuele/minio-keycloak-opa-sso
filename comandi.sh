@@ -148,7 +148,7 @@ inizializzazione
 configura_cert_manager
 configura_certificati
 configura_keycloak
-#configura_opa
+configura_opa
 configura_minio_operator
 configura_tenant_minio
 pulizia
