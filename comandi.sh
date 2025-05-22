@@ -96,12 +96,12 @@ configura_keycloak() {
 # Installa OPA, applica le policy e configura l'ingress
 configura_opa() {
   echo "Configurando OPA..."
-  kubectl apply -f opa/policies/esempio.yaml # applica le policy OPA tramite ConfigMap
+  #kubectl apply -f opa/policies/esempio.yaml # applica le policy OPA tramite ConfigMap
   kubectl wait --for=create secret opa-opa-kube-mgmt-cert -n opa
-  kubectl wait --for=create configMap minio-admin-policy -n opa
+  #kubectl wait --for=create configMap minio-admin-policy -n opa
   helm upgrade --install opa opa-kube-mgmt/opa-kube-mgmt \
-    --namespace opa --create-namespace \
-    -f opa/values.yaml
+    --namespace opa --create-namespace #\
+  #  -f opa/values.yaml
   kubectl apply -f opa/ingress.yaml # espone OPA tramite ingress
   sleep 30
 }
@@ -148,7 +148,7 @@ inizializzazione
 configura_cert_manager
 configura_certificati
 configura_keycloak
-configura_opa
+#configura_opa
 configura_minio_operator
 configura_tenant_minio
 pulizia
