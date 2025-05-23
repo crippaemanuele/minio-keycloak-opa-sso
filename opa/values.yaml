@@ -143,7 +143,6 @@ port: 8181
 
 extraArgs:
   - /policies
-  - --disable-authorization
 
 # Extra environment variables to be loaded into the OPA container
 extraEnv: []
