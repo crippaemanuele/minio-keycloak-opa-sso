@@ -121,8 +121,13 @@ tenant:
       value: "on"
     #Configurazione per OPA
     - name: MINIO_POLICY_PLUGIN_URL
-      value: "https://opa.local/v1/data/minio/authz"  # URL del plugin OPA
-    
+      value: "http://opa.local/v1/data/httpapi/authz/allow"  # URL del plugin OPA
+    - name: MINIO_CI_CD
+      value: "1" 
+    - name: MINIO_ROOT_USER
+      value: "minio"  # Nome utente root
+    - name: MINIO_ROOT_PASSWORD
+      value: "minio123"  # Password root
   priorityClassName: ""  # Nome della classe di priorità (vuoto se non necessario)
   additionalVolumes:  # Volumi aggiuntivi
     - name: ca
