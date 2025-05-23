@@ -1,0 +1,8 @@
+secretTargets:
+  enabled: true
+  authorizedSecretsAll: true
+#  authorizedSecrets:
+#    - ca-bundle
+#    - operator-ca-tls
+#    - keycloak-ca-tls
+#    - tenant-1-ca-tls

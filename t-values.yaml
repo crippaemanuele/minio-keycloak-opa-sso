@@ -1,0 +1,181 @@
+tenant:
+  name: myminio  # Nome del tenant MinIO
+  namespace: tenant-1  # Namespace in cui è installato il tenant
+
+  image:
+    repository: quay.io/minio/minio  # Repository dell'immagine Docker di MinIO
+    tag: RELEASE.2024-11-07T00-52-20Z  # Versione dell'immagine
+    pullPolicy: IfNotPresent  # Politica di pull dell'immagine
+
+  imagePullSecret: {}  # Secret per autenticazione al registry (vuoto se non necessario)
+
+  initContainers: []  # Contenitori di inizializzazione (vuoto se non necessario)
+
+  scheduler: {}  # Configurazione dello scheduler (vuoto se non necessario)
+
+  configuration:
+    name: myminio-env-configuration  # Nome della configurazione del tenant
+
+  configSecret:
+    name: myminio-env-configuration  # Nome del secret per le credenziali
+    accessKey: minio  # Chiave di accesso per MinIO
+    secretKey: minio123  # Chiave segreta per MinIO
+
+  poolsMetadata:
+    annotations: {}  # Annotazioni per i pool di storage
+    labels: {}  # Etichette per i pool di storage
+
+  pools:
+    - servers: 1  # Numero di server nel pool
+      name: pool-0  # Nome del pool
+      volumesPerServer: 1  # Numero di volumi per server
+      size: 10Gi  # Dimensione di ogni volume
+      storageAnnotations: {}  # Annotazioni per lo storage
+      storageLabels: {}  # Etichette per lo storage
+      annotations: {}  # Annotazioni aggiuntive
+      labels: {}  # Etichette aggiuntive
+      tolerations: []  # Tolleranze per i nodi
+      nodeSelector: {}  # Selettore dei nodi
+      affinity: {}  # Affinità dei nodi
+      resources: {}  # Risorse richieste/limitate
+      securityContext:
+        runAsUser: 1000  # UID dell'utente
+        runAsGroup: 1000  # GID del gruppo
+        fsGroup: 1000  # GID del filesystem
+        fsGroupChangePolicy: "OnRootMismatch"  # Politica di modifica del gruppo
+        runAsNonRoot: true  # Esegui come utente non root
+      containerSecurityContext:
+        runAsUser: 1000  # UID dell'utente
+        runAsGroup: 1000  # GID del gruppo
+        runAsNonRoot: true  # Esegui come utente non root
+        allowPrivilegeEscalation: false  # Non consentire l'elevazione dei privilegi
+        capabilities:
+          drop:
+            - ALL  # Rimuovi tutte le capacità
+        seccompProfile:
+          type: RuntimeDefault  # Profilo Seccomp predefinito
+      topologySpreadConstraints: []  # Vincoli di distribuzione topologica
+
+  mountPath: /export  # Percorso di montaggio per i volumi
+  subPath: /data  # Sotto-percorso per i volumi
+
+  metrics:
+    enabled: false  # Abilita/disabilita le metriche
+    port: 9000  # Porta per le metriche
+    protocol: http  # Protocollo per le metriche
+
+  certificate:
+    externalCaCertSecret: []
+    externalCertSecret: # Secret per certificati esterni
+      - name: myminio-tls
+        type: generic
+    requestAutoCert: false  # Richiedi certificati automatici
+    certConfig: {}  # Configurazione aggiuntiva per i certificati
+
+  features:
+    bucketDNS: false  # Abilita/disabilita il DNS per i bucket
+    domains: {}  # Configurazione dei domini
+    enableSFTP: false  # Abilita/disabilita SFTP
+
+  buckets:
+    - name: documenti  # Nome del bucket
+  users: []  # Configurazione degli utenti (vuoto se non necessario)
+
+  podManagementPolicy: Parallel  # Politica di gestione dei pod
+
+  liveness: {}  # Configurazione del probe di liveness
+  readiness: {}  # Configurazione del probe di readiness
+  startup: {}  # Configurazione del probe di startup
+  lifecycle: {}  # Configurazione del ciclo di vita dei pod
+
+  exposeServices: {}  # Configurazione dei servizi esposti
+
+  serviceAccountName: ""  # Nome del service account (vuoto se non necessario)
+  prometheusOperator: false  # Abilita/disabilita l'operatore Prometheus
+
+  logging: {}  # Configurazione del logging
+  serviceMetadata: {}  # Metadati per i servizi
+  env: # Variabili di ambiente aggiuntive, se non funziona aggiungere _PRIMARY_IAM ai primi tre
+  #VARIABILI DI AMBIENTE PER KEYCLOAK OIDC
+    - name: MINIO_IDENTITY_OPENID_VENDOR
+      value: "keycloak"  # URL del provider OpenID
+    - name: MINIO_IDENTITY_OPENID_KEYCLOAK_ADMIN_URL
+      value: "https://keycloak.local/admin"
+    - name: MINIO_IDENTITY_OPENID_KEYCLOAK_REALM
+      value: "MinIO"  # Nome del realm Keycloak
+    - name: MINIO_IDENTITY_OPENID_CONFIG_URL
+      value: "https://keycloak.local/realms/MinIO/.well-known/openid-configuration"  # URL di configurazione OpenID
+    - name: MINIO_IDENTITY_OPENID_CLIENT_ID
+      value: "minio-client"
+    - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+      value: "UySDgZLFW9GSWjtwVMx4yxEnpMkqD4"  # Segreto del client OpenID
+    - name: MINIO_IDENTITY_OPENID_CLAIM_NAME
+      value: "policy"  # Nome del claim OpenID
+    - name: MINIO_IDENTITY_OPENID_DISPLAY_NAME
+      value: "SSO"
+    - name: MINIO_IDENTITY_OPENID_SCOPES
+      value: "openid,email,profile"  # Scopes OpenID
+    - name: MINIO_BROWSER_REDIRECT_URL
+      value: "https://minio-console.local/oauth_callback"  # URL di reindirizzamento del browser
+    - name: MINIO_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
+      value: "on"
+    #Configurazione per OPA
+    - name: MINIO_POLICY_PLUGIN_URL
+      value: "http://opa.local/v1/data/httpapi/authz/allow"  # URL del plugin OPA
+    - name: MINIO_CI_CD
+      value: "1" 
+    - name: MINIO_ROOT_USER
+      value: "minio"  # Nome utente root
+    - name: MINIO_ROOT_PASSWORD
+      value: "minio123"  # Password root
+  priorityClassName: ""  # Nome della classe di priorità (vuoto se non necessario)
+  additionalVolumes:  # Volumi aggiuntivi
+    - name: ca
+      configMap: 
+        name: ca-bundle
+        defaultMode: 0444
+  additionalVolumeMounts:  # Mount dei volumi aggiuntivi
+    - name: ca
+      mountPath: /etc/ssl/certs/ca-certificates.crt
+      subPath: ca-certificates.crt
+      readOnly: true  # Monta il volume come read-only
+
+ingress:
+  api:
+    enabled: true  # Abilita l'ingress per le API
+    ingressClassName: "nginx"  # Nome della classe di ingress
+    annotations:
+      cert-manager.io/issuer: tenant-1-ca-issuer  #Issuer per i certificati
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Protocollo backend
+    tls:
+      - hosts:
+          - minio-api.local
+        secretName: minio-api.local-tls  # Secret TLS per le API
+    host: minio-api.local  # Host per le API
+    path: /
+    pathType: Prefix  # Tipo di percorso
+
+  console:
+    enabled: true  # Abilita l'ingress per la console
+    ingressClassName: "nginx"  # Nome della classe di ingress
+    annotations:
+      cert-manager.io/issuer: tenant-1-ca-issuer  #Issuer per i certificati
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Protocollo backend
+    tls:
+      - hosts:
+          - minio-console.local
+        secretName: minio-console.local-tls  # Secret TLS per la console
+    host: minio-console.local  # Host per la console
+    path: /
+    pathType: Prefix  # Tipo di percorso
+
+
+
+
+
+
+
+
+
+
+

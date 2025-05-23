@@ -20,7 +20,7 @@ inizializzazione() {
     kubectl create ns $ns --dry-run=client -o yaml | kubectl apply -f - # crea namespace se non esiste
     kubectl label namespace $ns create-ca-bundle=true --overwrite=true   # aggiunge label per trust-manager
   done
-  sleep 30
+  sleep 5
 }
 
 # Installa cert-manager e trust-manager, applica il ClusterIssuer
@@ -33,7 +33,7 @@ configura_cert_manager() {
     --namespace cert-manager \
     -f trust-manager/values.yaml
   kubectl apply -f certs/selfsigned-root-clusterissuer.yaml # ClusterIssuer per CA self-signed
-  sleep 30
+  sleep 10
 }
 
 # Applica e gestisce i certificati per Keycloak, OPA, MinIO Operator e Tenant
@@ -90,7 +90,7 @@ configura_keycloak() {
     --namespace keycloak --create-namespace \
     -f keycloak/values.yaml
   KEYCLOAK_PASSWORD=$(kubectl -n keycloak get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d) # salva la password admin
-  sleep 300
+  sleep 30
 }
 
 # Installa OPA, applica le policy e configura l'ingress

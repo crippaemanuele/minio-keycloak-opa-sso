@@ -1,0 +1,9 @@
+# tenant-1-ca-issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: tenant-1-ca-issuer
+  namespace: tenant-1
+spec:
+  ca:
+    secretName: tenant-1-ca-tls
