@@ -1,9 +1,0 @@
-# tenant-1-ca-issuer.yaml
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: opa-ca-issuer
-  namespace: opa
-spec:
-  ca:
-    secretName: opa-ca-tls
