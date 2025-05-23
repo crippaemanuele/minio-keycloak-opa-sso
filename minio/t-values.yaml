@@ -119,6 +119,9 @@ tenant:
       value: "https://minio-console.local/oauth_callback"  # URL di reindirizzamento del browser
     - name: MINIO_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
       value: "on"
+    #Configurazione per OPA
+    - name: MINIO_POLICY_PLUGIN_URL
+      value: "https://opa.local/v1/data/minio/authz"  # URL del plugin OPA
     
   priorityClassName: ""  # Nome della classe di priorità (vuoto se non necessario)
   additionalVolumes:  # Volumi aggiuntivi
