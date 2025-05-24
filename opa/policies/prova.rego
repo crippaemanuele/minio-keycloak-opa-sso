@@ -1,47 +1,54 @@
 package minio.authz
 
-default allow = false
+default allow := false
 
 # Consentito se medico
-allow {
-  is_medico
-  input.request.action == "s3:GetObject"
+allow if {
+	is_amministratore
 }
 
-allow {
-  is_medico
-  input.request.action == "s3:PutObject"
+allow if {
+	is_medico
+	input.request.action == "s3:GetObject"
+}
+
+allow if {
+	is_medico
+	input.request.action == "s3:PutObject"
 }
 
 # Consentito se segretario e solo in lettura
-allow {
-  is_segreteria
-  input.request.action == "s3:GetObject"
+allow if {
+	is_segreteria
+	input.request.action == "s3:GetObject"
 }
 
 # Consentito se paziente e il documento è intestato a lui
-allow {
-  is_paziente
-  input.request.action == "s3:GetObject"
-  document_intestato_all_utente
+allow if {
+	is_paziente
+	input.request.action == "s3:GetObject"
+	document_intestato_all_utente
 }
 
 # Helper per controllare il gruppo
-is_medico {
-  input.request.groups[_] == "medici"
+is_amministratore if {
+	"amministratori" in input.request.groups
 }
 
-is_segreteria {
-  input.request.groups[_] == "segreteria"
+is_medico if {
+	"medici" in input.request.groups
 }
 
-is_paziente {
-  input.request.groups[_] == "pazienti"
+is_segreteria if {
+	"segreteria" in input.request.groups
+}
+
+is_paziente if {
+	"pazienti" in input.request.groups
 }
 
 # Controlla se l'oggetto contiene il nome dell'utente
-document_intestato_all_utente {
-  # Split dell'oggetto per analizzarlo
-  nome_cognome := lower(replace(input.request.user, " ", "_"))
-  contains(lower(input.request.object), nome_cognome)
+document_intestato_all_utente if {
+	nome_cognome := lower(replace(input.request.user, " ", "_"))
+	contains(lower(input.request.object), nome_cognome)
 }
