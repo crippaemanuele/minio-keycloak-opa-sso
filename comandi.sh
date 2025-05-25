@@ -101,9 +101,9 @@ configura_opa() {
     policy_name=$(basename "$policy" .rego) # estrae il nome senza estensione
     kubectl create configmap "$policy_name" --from-file=main="$policy" -n opa --dry-run=client -o yaml | kubectl apply -f -
     kubectl label configmap "$policy_name" openpolicyagent.org/policy=rego -n opa --overwrite
+    kubectl wait --for=create configMap $policy_name -n opa
   done
   kubectl wait --for=create secret opa-opa-kube-mgmt-cert -n opa
-  kubectl wait --for=create configMap esempio -n opa
   helm upgrade --install opa opa-kube-mgmt/opa-kube-mgmt \
     --namespace opa --create-namespace \
     -f opa/values.yaml
