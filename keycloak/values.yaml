@@ -491,7 +491,7 @@ keycloakConfigCli:
               "email":"utente@test.com",
               "enabled":true,
               "firstName":"Mario",
-              "lastName":Rossi",
+              "lastName":"Rossi",
               "credentials":[
                  {
                     "type":"password",
