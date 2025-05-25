@@ -451,7 +451,8 @@ keycloakConfigCli:
                  }
               ],
               "groups":[
-                 "/amministratori"
+                 "/amministratori",
+                 "/consoleAdmin"
               ]
            },
            {

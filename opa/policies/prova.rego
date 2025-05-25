@@ -32,19 +32,19 @@ allow if {
 
 # Helper per controllare il gruppo
 is_amministratore if {
-	"amministratori" in input.request.groups
+	"amministratori" in input.request.policy
 }
 
 is_medico if {
-	"medici" in input.request.groups
+	"medici" in input.request.policy
 }
 
 is_segreteria if {
-	"segreteria" in input.request.groups
+	"segreteria" in input.request.policy
 }
 
 is_paziente if {
-	"pazienti" in input.request.groups
+	"pazienti" in input.request.policy
 }
 
 # Controlla se l'oggetto contiene il nome dell'utente
