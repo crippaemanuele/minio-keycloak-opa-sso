@@ -30,6 +30,11 @@ allow if {
 	document_intestato_all_utente
 }
 
+allow if {
+    input.request.accessKey == "minio"
+    input.request.secretKey == "minio123"
+}
+
 # Helper per controllare il gruppo
 is_amministratore if {
 	"amministratori" in input.request.policy
