@@ -305,41 +305,41 @@ keycloakConfigCli:
           "clientRoles": {}
         },
         {
-            "name": "medici",
-            "path": "/medici",
-            "subGroups": [],
-            "attributes": {
-              "policy": [
-                "medici"
-              ]
-            },
-            "realmRoles": [],
-            "clientRoles": {}
+          "name": "medici",
+          "path": "/medici",
+          "subGroups": [],
+          "attributes": {
+            "policy": [
+              "medici"
+            ]
           },
-          {
-            "name": "segreteria",
-            "path": "/segreteria",
-            "subGroups": [],
-            "attributes": {
-              "policy": [
-                "segreteria"
-              ]
-            },
-            "realmRoles": [],
-            "clientRoles": {}
+          "realmRoles": [],
+          "clientRoles": {}
+        },
+        {
+          "name": "segreteria",
+          "path": "/segreteria",
+          "subGroups": [],
+          "attributes": {
+            "policy": [
+              "segreteria"
+            ]
           },
-          {
-            "name": "pazienti",
-            "path": "/pazienti",
-            "subGroups": [],
-            "attributes": {
-              "policy": [
-                "pazienti"
-              ]
-            },
-            "realmRoles": [],
-            "clientRoles": {}
-          }
+          "realmRoles": [],
+          "clientRoles": {}
+        },
+        {
+          "name": "pazienti",
+          "path": "/pazienti",
+          "subGroups": [],
+          "attributes": {
+            "policy": [
+              "pazienti"
+            ]
+          },
+          "realmRoles": [],
+          "clientRoles": {}
+        }
         ],
         "clients": [
             {
