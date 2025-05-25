@@ -32,35 +32,35 @@ configura_cert_manager() {
   helm upgrade --install trust-manager jetstack/trust-manager \
     --namespace cert-manager \
     -f trust-manager/values.yaml
-  kubectl apply -f certs/selfsigned-root-clusterissuer.yaml # ClusterIssuer per CA self-signed
+  kubectl apply -f tls/selfsigned-root-clusterissuer.yaml # ClusterIssuer per CA self-signed
   sleep 10
 }
 
 # Applica e gestisce i certificati per Keycloak, OPA, MinIO Operator e Tenant
 configura_certificati() {
   # --- KEYCLOAK ---
-  kubectl apply -f certs/keycloak/keycloak-ca-certificate.yaml
-  kubectl apply -f certs/keycloak/keycloak-ca-issuer.yaml
+  kubectl apply -f tls/keycloak/keycloak-ca-certificate.yaml
+  kubectl apply -f tls/keycloak/keycloak-ca-issuer.yaml
   kubectl wait --for=create secret keycloak-ca-tls -n keycloak # attende la creazione del secret
   kubectl get secrets -n keycloak keycloak-ca-tls -o jsonpath='{.data.ca\.crt}' | base64 -d > keycloak-ca.crt
   kubectl create secret generic keycloak-ca-tls --from-file=keycloak-ca.crt -n cert-manager
 
   # --- OPA ---
-  kubectl apply -f certs/opa/opa-ca-certificate.yaml
-  kubectl apply -f certs/opa/opa-ca-issuer.yaml
+  kubectl apply -f tls/opa/opa-ca-certificate.yaml
+  kubectl apply -f tls/opa/opa-ca-issuer.yaml
   kubectl wait --for=create secret opa-ca-tls -n opa
   kubectl get secrets -n opa opa-ca-tls -o jsonpath='{.data.ca\.crt}' | base64 -d > opa-ca.crt
   kubectl create secret generic opa-ca-tls --from-file=opa-ca.crt -n cert-manager
 
   # --- MINIO OPERATOR ---
-  kubectl apply -f certs/minio/operator-ca-tls-secret.yaml
-  kubectl apply -f certs/minio/operator-ca-issuer.yaml
-  kubectl apply -f certs/minio/sts-tls-certificate.yaml
+  kubectl apply -f tls/minio/operator-ca-tls-secret.yaml
+  kubectl apply -f tls/minio/operator-ca-issuer.yaml
+  kubectl apply -f tls/minio/sts-tls-certificate.yaml
 
   # --- MINIO TENANT ---
-  kubectl apply -f certs/minio/tenant-1-ca-certificate.yaml
-  kubectl apply -f certs/minio/tenant-1-ca-issuer.yaml
-  kubectl apply -f certs/minio/tenant-1-minio-certificate.yaml
+  kubectl apply -f tls/minio/tenant-1-ca-certificate.yaml
+  kubectl apply -f tls/minio/tenant-1-ca-issuer.yaml
+  kubectl apply -f tls/minio/tenant-1-minio-certificate.yaml
   kubectl wait --for=create secret tenant-1-ca-tls -n tenant-1
   kubectl get secrets -n tenant-1 tenant-1-ca-tls -o jsonpath='{.data.ca\.crt}' | base64 -d > minio-ca.crt
   kubectl create secret generic tenant-1-ca-tls --from-file=minio-ca.crt -n cert-manager
