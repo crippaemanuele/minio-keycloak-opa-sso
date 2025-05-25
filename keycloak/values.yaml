@@ -467,7 +467,7 @@ keycloakConfigCli:
                  }
               ],
               "groups":[
-                 "/segretaria"
+                 "/segreteria"
               ]
            },
            {
