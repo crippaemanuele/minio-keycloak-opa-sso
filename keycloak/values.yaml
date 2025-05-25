@@ -281,8 +281,20 @@ keycloakConfigCli:
         "registrationAllowed":true,
         "groups": [ 
         {
-          "name": "consoleAdmins",
-          "path": "/consoleAdmins",
+          "name": "amministratori",
+          "path": "/amministratori",
+          "subGroups": [],
+          "attributes": {
+            "policy": [
+              "amministratori"
+            ]
+          },
+          "realmRoles": [],
+          "clientRoles": {}
+        },
+        {
+          "name": "consoleAdmin",
+          "path": "/consoleAdmin",
           "subGroups": [],
           "attributes": {
             "policy": [
@@ -293,12 +305,36 @@ keycloakConfigCli:
           "clientRoles": {}
         },
         {
-            "name": "leggiScrittori",
-            "path": "/leggiScrittori",
+            "name": "medici",
+            "path": "/medici",
             "subGroups": [],
             "attributes": {
               "policy": [
-                "readwrite"
+                "medici"
+              ]
+            },
+            "realmRoles": [],
+            "clientRoles": {}
+          },
+          {
+            "name": "segreteria",
+            "path": "/segreteria",
+            "subGroups": [],
+            "attributes": {
+              "policy": [
+                "segreteria"
+              ]
+            },
+            "realmRoles": [],
+            "clientRoles": {}
+          },
+          {
+            "name": "pazienti",
+            "path": "/pazienti",
+            "subGroups": [],
+            "attributes": {
+              "policy": [
+                "pazienti"
               ]
             },
             "realmRoles": [],
@@ -415,23 +451,55 @@ keycloakConfigCli:
                  }
               ],
               "groups":[
-                 "/consoleAdmins"
+                 "/amministratori"
               ]
            },
            {
-              "username":"utente",
-              "email":"utente@test.com",
+              "username":"segretaria",
+              "email":"segretaria@test.com",
               "enabled":true,
-              "firstName":"Utente",
-              "lastName":"Utente",
+              "firstName":"Alice",
+              "lastName":"Segretaria",
               "credentials":[
                  {
                     "type":"password",
-                    "value":"utente_pass"
+                    "value":"segretaria_pass"
                  }
               ],
               "groups":[
-                 "/leggiScrittori"
+                 "/segretaria"
+              ]
+           },
+           {
+              "username":"medico",
+              "email":"medico@test.com",
+              "enabled":true,
+              "firstName":"Mauro",
+              "lastName":"Medico",
+              "credentials":[
+                 {
+                    "type":"password",
+                    "value":"medico_pass"
+                 }
+              ],
+              "groups":[
+                 "/medici"
+              ]
+           },
+           {
+              "username":"paziente",
+              "email":"utente@test.com",
+              "enabled":true,
+              "firstName":"Mario",
+              "lastName":Rossi",
+              "credentials":[
+                 {
+                    "type":"password",
+                    "value":"paziente_pass"
+                 }
+              ],
+              "groups":[
+                 "/pazienti"
               ]
            }
         ]
