@@ -1,0 +1,53 @@
+{
+  "input": {
+    "account": "minio",
+    "groups": null,
+    "action": "s3:GetObject",
+    "originalAction": "",
+    "bucket": "referti",
+    "object": "referti/amministratore_amministratore_esame1.pdf",
+    "conditions": {
+      "Authorization": [
+        "AWS4-HMAC-SHA256 Credential=minio/20250526/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=xyz"
+      ],
+      "CurrentTime": ["2025-05-26T11:47:56Z"],
+      "SourceIp": ["192.168.49.1"],
+      "User-Agent": ["MinIO (linux; amd64) madmin-go/3.0.70 MinIO Console/(dev)"],
+      "X-Amz-Date": ["20250526T114756Z"],
+      "X-Amz-Security-Token": ["eyJhbGciOi..."],
+      "accesskey": ["8TOE3G4ZSVGIE21V1O58"],
+      "email": ["amministratore@test.com"],
+      "family_name": ["Amministratore"],
+      "given_name": ["Amministratore"],
+      "policy": ["consoleAdmin"],
+      "preferred_username": ["amministratore"],
+      "userid": ["TPaAekCbncdU-R_zvakQxWtl4pqn4gVC9FWclF_mp8I"],
+      "username": ["TPaAekCbncdU-R_zvakQxWtl4pqn4gVC9FWclF_mp8I"]
+    },
+    "owner": true,
+    "claims": {
+      "accessKey": "8TOE3G4ZSVGIE21V1O58",
+      "acr": "1",
+      "at_hash": "MX7UsCb3rZUCe53vX8WQwg",
+      "aud": "minio-client",
+      "auth_time": 1748260066,
+      "azp": "minio-client",
+      "email": "amministratore@test.com",
+      "email_verified": false,
+      "exp": 1748260967,
+      "family_name": "Amministratore",
+      "given_name": "Amministratore",
+      "iat": 1748260067,
+      "iss": "https://keycloak.local/realms/MinIO",
+      "jti": "c7bb47b9-cacb-4905-b2a4-0ed26488e321",
+      "name": "Amministratore Amministratore",
+      "policy": "consoleAdmin",
+      "preferred_username": "amministratore",
+      "sid": "0bb363f4-ef34-48ec-817c-15b38e4ef10a",
+      "sub": "c2bc907b-cda1-4e05-90a8-f933802b408c",
+      "typ": "ID",
+      "userid": "TPaAekCbncdU-R_zvakQxWtl4pqn4gVC9FWclF_mp8I"
+    },
+    "denyOnly": false
+  }
+}
