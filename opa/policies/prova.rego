@@ -1,12 +1,16 @@
 package httpapi.authz
 
 # Stampa l'intero input ricevuto per debugging
-_ = print("🧪 Debug attivo - inizio valutazione")
+default allow = true
 
-_ = print("INPUT MINIO → OPA:", json.encode(input))
+# Questo serve solo a loggare l'input
+trace_input {
+  debug("INPUT RICEVUTO: ", input)
+}
 
+# Esegui il trace (non fa nulla in logica, solo logging)
+_ = trace_input
 
-default allow := true
 
 ## Consentito se medico
 #allow if {

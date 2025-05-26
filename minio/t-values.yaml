@@ -121,7 +121,7 @@ tenant:
       value: "on"
     #Configurazione per OPA
     - name: MINIO_POLICY_PLUGIN_URL
-      value: "http://opa.local/v1/data/httpapi/authz/allow"  # URL del plugin OPA
+      value: "https://opa.local/v1/data/httpapi/authz/allow"  # URL del plugin OPA
     - name: MINIO_CI_CD
       value: "1" 
     - name: MINIO_ROOT_USER

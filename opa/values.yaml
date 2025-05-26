@@ -190,7 +190,7 @@ mgmt:
     ignoreNs: []
 
 # Log level for OPA ('debug', 'info', 'error') (app default=info)
-logLevel: info
+logLevel: debug
 
 # Log format for OPA ('text', 'json') (app default=text)
 logFormat: json
