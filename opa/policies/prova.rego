@@ -1,4 +1,4 @@
-package minio.authz
+package httpapi.authz
 
 # Stampa l'intero input ricevuto per debugging
 _ = print("🧪 Debug attivo - inizio valutazione")

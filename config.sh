@@ -122,8 +122,8 @@ configura_minio_operator() {
 
 # Installa il tenant MinIO e attende che i pod siano pronti
 configura_tenant_minio() {
-  kubectl wait --for=condition=Ready pod/keycloak-0 -n keycloak # attende che Keycloak sia pronto
-  kubectl wait --for=condition=Ready pods -n opa               # attende che OPA sia pronto
+  kubectl wait -n keycloak --for=condition=Ready pod/keycloak-0 --timeout=300s   # attende che Keycloak sia pronto
+  kubectl wait pod -n opa -l app=opa-opa-kube-mgmt --for=condition=Ready --timeout=60s # attende che OPA sia pronto
   echo "Configurando il tenant di MinIO..."
   helm upgrade --install myminio minio-operator/tenant \
     --namespace tenant-1 --create-namespace \
