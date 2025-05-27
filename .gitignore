@@ -4,7 +4,7 @@ minio-ca.crt
 opa-ca.crt
 problema-attuale.txt
 temp.sh
-logs.txt
+
 
 # Ignora le cartelle e tutti i loro contenuti
 tmp/
