@@ -294,12 +294,12 @@ extraContainers: []
 #       mountPath: /etc/example-app-conf
 
 extraVolumes:
-  - name: prova
+  - name: allow
     configMap:
-      name: prova
+      name: allow
 
 extraVolumeMounts:
-  - name: prova
+  - name: allow
     mountPath: /policies
     readOnly: true
 ## Additional volumes to the opa pod.
