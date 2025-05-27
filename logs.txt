@@ -1,6 +1,0 @@
-curl -X POST https://opa.local/v1/data/httpapi/authz/allow -H "Content-Type: application/json" -d '{}'
-
-{
-  "code": "unauthorized",
-  "message": "request rejected by administrative policy"
-}
