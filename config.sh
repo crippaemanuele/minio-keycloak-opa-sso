@@ -141,10 +141,10 @@ pulizia() {
     kubectl delete pod "$name" -n "$ns"
   done
   echo "Tutte le configurazioni sono state completate con successo!"
-  echo "Per accedere a Keycloak, utilizza l'URL: http://keycloak.local"
+  echo "Per accedere a Keycloak, utilizza l'URL: https://keycloak.local"
   echo "Password di Keycloak: $KEYCLOAK_PASSWORD"
-  echo "Per accedere a MinIO, utilizza l'URL: http://minio.local"
-  echo "Per accedere a OPA, utilizza l'URL: http://opa.local"
+  echo "Per accedere a MinIO, utilizza l'URL: https://minio.local"
+  echo "Per accedere a OPA, utilizza l'URL: https://opa.local"
 }
 
 # Esecuzione sequenziale delle funzioni principali

@@ -2,7 +2,7 @@
 
 # 🔒 Aggiunge certificati self-signed al sistema (Keycloak + MinIO)
 echo "📥 Aggiorno certificati locali..."
-sudo cp Projects/minio-keycloak-sso/certs/*.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates
+sudo cp certs/*.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates
 
 # 📦 Installa mc se non presente
 if ! command -v mc &> /dev/null; then
