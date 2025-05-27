@@ -115,7 +115,7 @@ podDisruptionBudget:
 authz:
   # Disable if you don't want authorization.
   # Mostly useful for debugging.
-  enabled: true
+  enabled: false
   # Used for setting the mgmt token used for authz instead of auto generated default
   # mgmtToken:
   #    secretName: name of the secret
@@ -294,12 +294,12 @@ extraContainers: []
 #       mountPath: /etc/example-app-conf
 
 extraVolumes:
-  - name: allow
+  - name: prova
     configMap:
-      name: allow
+      name: prova
 
 extraVolumeMounts:
-  - name: allow
+  - name: prova
     mountPath: /policies
     readOnly: true
 ## Additional volumes to the opa pod.
