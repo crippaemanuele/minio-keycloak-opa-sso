@@ -20,14 +20,4 @@ mc alias set minio_root https://minio-api.local minio minio123
 
 # 🐍 Avvia script Python OIDC
 echo "🐍 Avvio autenticazione OIDC tramite Python..."
-#Ottego token OIDC per MinIO
-TOKEN=$(curl -X POST "https://keycloak.local/realms/MinIO/protocol/openid-connect/token" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "client_id=minio-client" \
-  -d "client_secret=UySDgZLFW9GSWjtwVMx4yxEnpMkqD4" \
-  -d "grant_type=password" \
-  -d "username=amministratore" \
-  -d "password=amministratore_pass" \
-  -d "scope=openid profile email roles" | jq -r '.access_token')
-
 python3 oidc_auth.py
