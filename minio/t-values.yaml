@@ -111,6 +111,8 @@ tenant:
       value: "UySDgZLFW9GSWjtwVMx4yxEnpMkqD4"  # Segreto del client OpenID
     - name: MINIO_IDENTITY_OPENID_CLAIM_NAME
       value: "policy"  # Nome del claim OpenID
+    - name: MINIO_IDENTITY_OPENID_ROLE_POLICY
+      value: "policy"
     - name: MINIO_IDENTITY_OPENID_DISPLAY_NAME
       value: "SSO"
     - name: MINIO_IDENTITY_OPENID_SCOPES
@@ -119,9 +121,15 @@ tenant:
       value: "https://minio-console.local/oauth_callback"  # URL di reindirizzamento del browser
     - name: MINIO_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
       value: "on"
+    - name: MINIO_IDENTITY_OPENID_VENDOR_PRIMARY_IAM
+      value: "keycloak"
+    - name: MINIO_IDENTITY_OPENID_CONFIG_URL_PRIMARY_IAM
+      value: "https://keycloak.local/realms/MinIO/.well-known/openid-configuration"
+    - name: MINIO_IDENTITY_OPENID_CLIENT_ID_PRIMARY_IAM
+      value: "minio-client"
     #Configurazione per OPA
     - name: MINIO_POLICY_PLUGIN_URL
-      value: "https://opa.local/v1/data/httpapi/authz/allow"  # URL del plugin OPA
+      value: "https://opa.local/v1/data/httpapi/authz/allow"
     - name: MINIO_CI_CD
       value: "1" 
     - name: MINIO_ROOT_USER
