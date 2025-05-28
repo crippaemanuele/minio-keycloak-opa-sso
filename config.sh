@@ -13,7 +13,7 @@ prerequisiti() {
 
 # Avvia Minikube, abilita ingress e crea i namespace necessari
 inizializzazione() {
-  echo "Eseguendo inizializzazione..."
+  echo "⚙️ Eseguendo inizializzazione..."
   minikube start --driver=docker --cpus=3 --memory=6144
   minikube addons enable ingress
   for ns in cert-manager keycloak minio-operator opa tenant-1; do
@@ -25,7 +25,7 @@ inizializzazione() {
 
 # Installa cert-manager e trust-manager, applica il ClusterIssuer
 configura_cert_manager() {
-  echo "Configurando Cert-Manager..."
+  echo "🗳️ Configurando Cert-Manager..."
   helm upgrade --install cert-manager jetstack/cert-manager \
     --namespace cert-manager --create-namespace \
     --set crds.enabled=true # installa CRDs
@@ -85,7 +85,7 @@ configura_certificati() {
 
 # Installa Keycloak tramite Helm e attende che sia pronto
 configura_keycloak() {
-  echo "Configurando Keycloak..."
+  echo "🔐 Configurando Keycloak..."
   helm upgrade --install keycloak bitnami/keycloak \
     --namespace keycloak --create-namespace \
     -f keycloak/values.yaml
@@ -95,7 +95,7 @@ configura_keycloak() {
 
 # Installa OPA, applica le policy e configura l'ingress
 configura_opa() {
-  echo "Configurando OPA..."
+  echo "🚦 Configurando OPA..."
   # Cicla su tutti i file .rego nella cartella opa/policies
   for policy in opa/policies/*.rego; do
     policy_name=$(basename "$policy" .rego) # estrae il nome senza estensione
@@ -113,7 +113,7 @@ configura_opa() {
 
 # Installa MinIO Operator tramite Helm
 configura_minio_operator() {
-  echo "Configurando MinIO Operator..."
+  echo "📎 Configurando MinIO Operator..."
   helm upgrade --install operator minio-operator/operator \
     --namespace minio-operator --create-namespace \
     -f minio/o-values.yaml
@@ -124,7 +124,7 @@ configura_minio_operator() {
 configura_tenant_minio() {
   kubectl wait -n keycloak --for=condition=Ready pod/keycloak-0 --timeout=300s   # attende che Keycloak sia pronto
   kubectl wait pod -n opa -l app=opa-opa-kube-mgmt --for=condition=Ready --timeout=60s # attende che OPA sia pronto
-  echo "Configurando il tenant di MinIO..."
+  echo "🪣 Configurando il tenant di MinIO..."
   helm upgrade --install myminio minio-operator/tenant \
     --namespace tenant-1 --create-namespace \
     -f minio/t-values.yaml
