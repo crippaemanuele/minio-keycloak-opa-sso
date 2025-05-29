@@ -41,9 +41,9 @@ richiesta = requests.post(minio_api, data=data_sts)
 if richiesta.status_code == 200:
     # Parsing della risposta XML per ottenere le credenziali temporanee
     root = ET.fromstring(richiesta.text)
-    access_key = root.find('.//AccessKeyId').text
-    secret_key = root.find('.//SecretAccessKey').text
-    session_token = root.find('.//SessionToken').text
+    access_key = root.find('.//AccessKeyId')
+    secret_key = root.find('.//SecretAccessKey')
+    session_token = root.find('.//SessionToken')
     print("Credenziali STS ottenute con successo.")
 else:
     print("Errore durante l'ottenimento delle credenziali STS:", richiesta.status_code, richiesta.text)
