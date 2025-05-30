@@ -44,12 +44,12 @@ token_oidc=$(curl -s -d "client_id=$client_id" \
      -d "scope=openid profile email" \
      -X POST $ENDPOINT_KEYCLOAK | jq -r '.access_token')
 #Ottieni credenziali STS
-curl -X POST "https://minio-api.local" \
+token_sts=$(curl -X POST "https://minio-api.local" \
      -d "Action=AssumeRoleWithWebIdentity" \
      -d "Version=2011-06-15" \
      -d "DurationSeconds=86000" \
      -d "Token=$token_oidc" \
-     -d "RoleArn=arn:minio:iam:::role/1mAsqpUGox8eewepDQ1dmtwpdY8"
+     -d "RoleArn=arn:minio:iam:::role/1mAsqpUGox8eewepDQ1dmtwpdY8")
 # Accedi a MinIO con token OIDC
 
 ## 🐍 Avvia script Python OIDC
