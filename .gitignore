@@ -8,5 +8,4 @@ temp.sh
 
 # Ignora le cartelle e tutti i loro contenuti
 tmp/
-logs/
 certs/
