@@ -50,7 +50,7 @@ else:
     exit(1)
 # Inizializzazione del client MinIO con le credenziali STS
 client = Minio(
-    "https://minio-api.local",
+    "minio-api.local",
     access_key=access_key,
     secret_key=secret_key,
     session_token=session_token,
