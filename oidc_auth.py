@@ -82,7 +82,9 @@ def main():
         return
 
     print("Credenziali STS ottenute con successo.")
-
+    print(f"Access Key: {access_key}")
+    print(f"Secret Key: {secret_key}")
+    print(f"Session Token: {session_token}")
     # Inizializza client MinIO con le credenziali temporanee
     client = Minio(
         "minio-api.local",
