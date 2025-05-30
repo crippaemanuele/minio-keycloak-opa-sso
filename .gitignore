@@ -4,10 +4,9 @@ minio-ca.crt
 opa-ca.crt
 problema-attuale.txt
 temp.sh
-logs-opa.txt
 
 
 # Ignora le cartelle e tutti i loro contenuti
 tmp/
-logs_e_desc/
+logs/
 certs/

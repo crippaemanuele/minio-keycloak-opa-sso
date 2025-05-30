@@ -45,6 +45,9 @@ if richiesta.status_code == 200:
     secret_key = root.find('.//SecretAccessKey')
     session_token = root.find('.//SessionToken')
     print("Credenziali STS ottenute con successo.")
+    print(f"Access Key: {access_key}")
+    print(f"Secret Key: {secret_key}")
+    print(f"Session Token: {session_token}")
 else:
     print("Errore durante l'ottenimento delle credenziali STS:", richiesta.status_code, richiesta.text)
     exit(1)
