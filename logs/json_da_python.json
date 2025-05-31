@@ -1,160 +1,72 @@
 {
   "input": {
-    "account": "DZEYQBQF9KPAYCOKICP8",
+    "account": "4ZUAR6F38UG5Y029GN8C",
     "groups": null,
     "action": "s3:ListAllMyBuckets",
     "originalAction": "",
     "bucket": "",
     "conditions": {
-      "Accept-Encoding": [
-        "identity"
-      ],
-      "Authorization": [
-        "AWS4-HMAC-SHA256 Credential=DZEYQBQF9KPAYCOKICP8/20250530/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-security-token, Signature=5e09be66853c5d13da8e4527a43ed0be08faa8ef2f7b52ec0ec27607210aed24"
-      ],
-      "CurrentTime": [
-        "2025-05-30T15:56:34Z"
-      ],
-      "EpochTime": [
-        "1748620594"
-      ],
-      "Referer": [
-        ""
-      ],
-      "SecureTransport": [
-        "true"
-      ],
-      "SourceIp": [
-        "192.168.49.1"
-      ],
-      "User-Agent": [
-        "MinIO (Linux; x86_64) minio-py/7.2.15"
-      ],
-      "UserAgent": [
-        "MinIO (Linux; x86_64) minio-py/7.2.15"
-      ],
-      "X-Amz-Content-Sha256": [
-        "UNSIGNED-PAYLOAD"
-      ],
-      "X-Amz-Date": [
-        "20250530T155634Z"
-      ],
-      "X-Amz-Security-Token": [
-        "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJEWkVZUUJRRjlLUEFZQ09LSUNQOCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9taW5pby1jb25zb2xlLmxvY2FsIl0sImF1ZCI6ImFjY291bnQiLCJhenAiOiJtaW5pby1jbGllbnQiLCJlbWFpbCI6Im1lZGljb0B0ZXN0LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZXhwIjoxNzQ4NzA2NTg2LCJmYW1pbHlfbmFtZSI6Ik1lZGljbyIsImdpdmVuX25hbWUiOiJNYXVybyIsImlhdCI6MTc0ODYyMDU4NSwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hay5sb2NhbC9yZWFsbXMvTWluSU8iLCJqdGkiOiI1NzNhNjI5Ny1jY2ZjLTQ4N2YtYWRmYy01OWNlN2VlMTZjZjAiLCJuYW1lIjoiTWF1cm8gTWVkaWNvIiwicG9saWN5IjpbIm1lZGljaSJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJtZWRpY28iLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1taW5pbyIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJyb2xlQXJuIjoiYXJuOm1pbmlvOmlhbTo6OnJvbGUvMW1Bc3FwVUdveDhlZXdlcERRMWRtdHdwZFk4Iiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCBtaW5pby1hdXRob3JpemF0aW9uIiwic2lkIjoiYmU0NjMzMjItYjkyOS00NDNjLTg4NWUtY2NlN2ZmYTJjMzYyIiwic3ViIjoiN2U3MmUzOWQtMTE3MC00NGJkLWFkMDctNDVmMzQ0YWQxNzQ4IiwidHlwIjoiQmVhcmVyIn0.SavYKCJauAfPFtmwOEf6SCO51yWer3uqW3Y6HSL29tHO6A3c3xDtEtfQHHKH7DTuAgZJ6QFLutRUED-n489EeA"
-      ],
-      "X-Forwarded-For": [
-        "192.168.49.1"
-      ],
-      "X-Forwarded-Host": [
-        "minio-api.local"
-      ],
-      "X-Forwarded-Port": [
-        "443"
-      ],
-      "X-Forwarded-Proto": [
-        "https"
-      ],
-      "X-Forwarded-Scheme": [
-        "https"
-      ],
-      "X-Real-Ip": [
-        "192.168.49.1"
-      ],
-      "X-Request-Id": [
-        "4bb856c8c96c188b88282d18f8187ddc"
-      ],
-      "X-Scheme": [
-        "https"
-      ],
-      "accesskey": [
-        "DZEYQBQF9KPAYCOKICP8"
-      ],
-      "acr": [
-        "1"
-      ],
-      "aud": [
-        "account"
-      ],
-      "authType": [
-        "REST-HEADER"
-      ],
-      "azp": [
-        "minio-client"
-      ],
-      "email": [
-        "medico@test.com"
-      ],
-      "family_name": [
-        "Medico"
-      ],
-      "given_name": [
-        "Mauro"
-      ],
-      "iss": [
-        "https://keycloak.local/realms/MinIO"
-      ],
-      "jti": [
-        "573a6297-ccfc-487f-adfc-59ce7ee16cf0"
-      ],
-      "name": [
-        "Mauro Medico"
-      ],
-      "preferred_username": [
-        "medico"
-      ],
-      "principaltype": [
-        "AssumedRole"
-      ],
-      "rolearn": [
-        "arn:minio:iam:::role/1mAsqpUGox8eewepDQ1dmtwpdY8"
-      ],
-      "scope": [
-        "openid profile email minio-authorization"
-      ],
-      "sid": [
-        "be463322-b929-443c-885e-cce7ffa2c362"
-      ],
-      "signatureversion": [
-        "AWS4-HMAC-SHA256"
-      ],
-      "sub": [
-        "7e72e39d-1170-44bd-ad07-45f344ad1748"
-      ],
-      "typ": [
-        "Bearer"
-      ],
-      "userid": [
-        "jIF2j4YS3db4F5bvkDAUb9D63kmoXpd7NPSh3ut1tfg"
-      ],
-      "username": [
-        "jIF2j4YS3db4F5bvkDAUb9D63kmoXpd7NPSh3ut1tfg"
-      ],
-      "versionid": [
-        ""
-      ]
+      "Accept-Encoding": ["identity"],
+      "Authorization": ["AWS4-HMAC-SHA256 Credential=4ZUAR6F38UG5Y029GN8C/20250531/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-security-token, Signature=6df8d1db16648a39f4cf5749637b860e259fa932d2b12ed59741d866930809b6"],
+      "CurrentTime": ["2025-05-31T15:04:26Z"],
+      "EpochTime": ["1748703866"],
+      "Referer": [""],
+      "SecureTransport": ["true"],
+      "SourceIp": ["192.168.49.1"],
+      "User-Agent": ["MinIO (Linux; x86_64) minio-py/7.2.15"],
+      "UserAgent": ["MinIO (Linux; x86_64) minio-py/7.2.15"],
+      "X-Amz-Content-Sha256": ["UNSIGNED-PAYLOAD"],
+      "X-Amz-Date": ["20250531T150426Z"],
+      "X-Amz-Security-Token": ["eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9..."],
+      "X-Forwarded-For": ["192.168.49.1"],
+      "X-Forwarded-Host": ["minio-api.local"],
+      "X-Forwarded-Port": ["443"],
+      "X-Forwarded-Proto": ["https"],
+      "X-Forwarded-Scheme": ["https"],
+      "X-Real-Ip": ["192.168.49.1"],
+      "X-Request-Id": ["6551145b5daaea4e6674479ad1ff6cb0"],
+      "X-Scheme": ["https"],
+      "accesskey": ["4ZUAR6F38UG5Y029GN8C"],
+      "acr": ["1"],
+      "aud": ["account"],
+      "authType": ["REST-HEADER"],
+      "azp": ["minio-client"],
+      "email": ["medico@test.com"],
+      "family_name": ["Medico"],
+      "given_name": ["Mauro"],
+      "iss": ["https://keycloak.local/realms/MinIO"],
+      "jti": ["76750a48-abf2-46cf-b8c4-2ebd56de61e0"],
+      "name": ["Mauro Medico"],
+      "preferred_username": ["medico"],
+      "principaltype": ["AssumedRole"],
+      "rolearn": ["arn:minio:iam:::role/1mAsqpUGox8eewepDQ1dmtwpdY8"],
+      "scope": ["openid profile minio-authorization email"],
+      "sid": ["a49e04f0-cb58-45c8-9c21-58a8b7d2aaea"],
+      "signatureversion": ["AWS4-HMAC-SHA256"],
+      "sub": ["7e15594b-2e69-4865-bb84-4ce8a9bf15cc"],
+      "typ": ["Bearer"],
+      "userid": ["R5JPGS52U1jCt_7QJ4viiC9gBYNki6tbKK7gVr_QFTs"],
+      "username": ["R5JPGS52U1jCt_7QJ4viiC9gBYNki6tbKK7gVr_QFTs"],
+      "versionid": [""]
     },
     "owner": false,
     "object": "",
     "claims": {
-      "accessKey": "DZEYQBQF9KPAYCOKICP8",
+      "accessKey": "4ZUAR6F38UG5Y029GN8C",
       "acr": "1",
-      "allowed-origins": [
-        "https://minio-console.local"
-      ],
+      "allowed-origins": ["https://minio-console.local"],
       "aud": "account",
       "azp": "minio-client",
       "email": "medico@test.com",
       "email_verified": false,
-      "exp": 1748706586,
+      "exp": 1748789864,
       "family_name": "Medico",
       "given_name": "Mauro",
-      "iat": 1748620585,
+      "iat": 1748703864,
       "iss": "https://keycloak.local/realms/MinIO",
-      "jti": "573a6297-ccfc-487f-adfc-59ce7ee16cf0",
+      "jti": "76750a48-abf2-46cf-b8c4-2ebd56de61e0",
       "name": "Mauro Medico",
-      "policy": [
-        "medici"
-      ],
+      "policy": ["medici"],
       "preferred_username": "medico",
       "realm_access": {
         "roles": [
@@ -173,9 +85,9 @@
         }
       },
       "roleArn": "arn:minio:iam:::role/1mAsqpUGox8eewepDQ1dmtwpdY8",
-      "scope": "openid profile email minio-authorization",
-      "sid": "be463322-b929-443c-885e-cce7ffa2c362",
-      "sub": "7e72e39d-1170-44bd-ad07-45f344ad1748",
+      "scope": "openid profile minio-authorization email",
+      "sid": "a49e04f0-cb58-45c8-9c21-58a8b7d2aaea",
+      "sub": "7e15594b-2e69-4865-bb84-4ce8a9bf15cc",
       "typ": "Bearer"
     },
     "denyOnly": false
