@@ -441,6 +441,7 @@ keycloakConfigCli:
            {
               "username":"amministratore",
               "email":"amministratore@test.com",
+              "emailVerified": true,
               "enabled":true,
               "firstName":"Amministratore",
               "lastName":"Amministratore",
@@ -456,15 +457,16 @@ keycloakConfigCli:
               ]
            },
            {
-              "username":"segretaria",
+              "username":"segreteria",
               "email":"segretaria@test.com",
+              "emailVerified": true,
               "enabled":true,
               "firstName":"Alice",
               "lastName":"Segretaria",
               "credentials":[
                  {
                     "type":"password",
-                    "value":"segretaria_pass"
+                    "value":"segreteria_pass"
                  }
               ],
               "groups":[
@@ -474,6 +476,7 @@ keycloakConfigCli:
            {
               "username":"medico",
               "email":"medico@test.com",
+              "emailVerified": true,
               "enabled":true,
               "firstName":"Mauro",
               "lastName":"Medico",
@@ -490,6 +493,7 @@ keycloakConfigCli:
            {
               "username":"paziente",
               "email":"utente@test.com",
+              "emailVerified": true,
               "enabled":true,
               "firstName":"Mario",
               "lastName":"Rossi",

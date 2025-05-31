@@ -34,6 +34,9 @@ allow if {
 is_amministratore if {
 	"amministratori" in input.input.claims.policy
 }
+is_amministratore if {
+	input.input.claims.policy == "amministratori"
+}
 
 is_medico if {
 	"medici" in input.input.claims.policy
