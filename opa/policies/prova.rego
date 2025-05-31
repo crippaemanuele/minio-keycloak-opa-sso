@@ -1,79 +1,58 @@
 package httpapi.authz
 
-import base64url
-import json
-
 default allow := false
 
+# Consentito se medico
 allow if {
-    is_amministratore
-}
-
-allow if {
-    is_medico
-    input.input.action != "s3:DeleteBucket"
+	is_amministratore
 }
 
 allow if {
-    is_segreteria
-    input.input.action == "s3:GetObject"
+	is_medico
+	input.input.action == "s3:GetObject"
 }
 
 allow if {
-    is_paziente
-    input.input.action == "s3:GetObject"
-    document_intestato_all_utente
+	is_medico
+	input.input.action == "s3:PutObject"
+}
+
+# Consentito se segretario e solo in lettura
+allow if {
+	is_segreteria
+	input.input.action == "s3:GetObject"
+}
+
+# Consentito se paziente e il documento è intestato a lui
+allow if {
+	is_paziente
+	input.input.action == "s3:GetObject"
+	document_intestato_all_utente
 }
 
 allow if {
-    input.input.account == "minio"
+	input.input.account == "minio"
 }
 
-# Funzione helper per estrarre e decodificare il payload JWT
-jwt_payload := payload if {
-    token := input.input.conditions["X-Amz-Security-Token"][0]
-    parts := split(token, ".")
-    # La seconda parte è il payload base64url
-    payload_b64 := parts[1]
-    payload_json := base64url.decode(payload_b64)
-    payload := json.unmarshal(payload_json)
-}
-
-# Controllo se una data policy è presente nel token JWT o nei claims o in input.policy
-has_policy(p) if {
-    # Verifica in jwt_payload.policy (se esiste)
-    jwt_payload.policy[_] == p
-} else if {
-    input.input.claims.policy == p
-} else if {
-    p in input.policy
-} else if {
-    input.input.condition.policy == p
-}
-
-# Regole di ruolo
-
+# Helper per controllare il gruppo
 is_amministratore if {
-    has_policy("amministratori") 
-} else if {
-    has_policy("consoleAdmin")
+    input.input.claims.policy == "amministratore"
 }
 
 is_medico if {
-    has_policy("medici")
+	input.input.claims.policy == "medici"
 }
 
 is_segreteria if {
-    has_policy("segreteria")
+	input.input.claims.policy == "segreteria"
 }
 
 is_paziente if {
-    has_policy("pazienti")
+	input.input.claims.policy == "pazienti"
 }
 
+# Controlla se l'oggetto contiene il nome dell'utente
 document_intestato_all_utente if {
-    cognome := lower(input.input.claims.family_name)
-    nome := lower(input.input.claims.given_name)
-    full_name := sprintf("%s %s", [cognome, nome])
-    contains(lower(input.input.object), full_name)
+	cognome_nome := lower(replace(input.input.claims.family_name, "_", input.input.claims.given_name))
+	contains(lower(input.input.object), cognome_nome)
 }
