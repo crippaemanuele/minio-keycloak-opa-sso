@@ -10,58 +10,58 @@ allow if {
 # Consentito se medico e non cancella bucket
 allow if {
     is_medico
-    input.input.action != "s3:DeleteBucket"
+    input.action != "s3:DeleteBucket"
 }
 
 # Consentito se segretario e solo in lettura
 allow if {
     is_segreteria
-    input.input.action in read_only_actions
+    input.action in read_only_actions
 }
 
 # Consentito se paziente e il documento è intestato a lui
 allow if {
     is_paziente
-    input.input.action in read_only_actions
+    input.action in read_only_actions
     document_intestato_all_utente
 }
 
 # Account di servizio MinIO
 allow if {
-    input.input.account == "minio"
+    input.account == "minio"
 }
 
 # Helper per controllare il gruppo
 is_amministratore if {
-    "amministratori" in input.input.claims.policy
+    "amministratori" in input.claims.policy
 }
 
 is_medico if {
-    "medici" in input.input.claims.policy
+    "medici" in input.claims.policy
 }
 
 is_segreteria if {
-    "segreteria" in input.input.claims.policy
+    "segreteria" in input.claims.policy
 }
 
 is_paziente if {
-    "pazienti" in input.input.claims.policy
+    "pazienti" in input.claims.policy
 }
 
 # Controlla se l'oggetto contiene il nome dell'utente (MIGLIORATA)
 document_intestato_all_utente if {
-    family_name := lower(input.input.claims.family_name)
-    given_name := lower(input.input.claims.given_name)
-    object_name := lower(input.input.object)
+    family_name := lower(input.claims.family_name)
+    given_name := lower(input.claims.given_name)
+    object_name := lower(input.object)
     
     # Verifica diverse combinazioni nome-cognome
     contains(object_name, sprintf("%s_%s", [family_name, given_name]))
 }
 
 document_intestato_all_utente if {
-    family_name := lower(input.input.claims.family_name)
-    given_name := lower(input.input.claims.given_name)
-    object_name := lower(input.input.object)
+    family_name := lower(input.claims.family_name)
+    given_name := lower(input.claims.given_name)
+    object_name := lower(input.object)
     
     # Verifica anche cognome-nome
     contains(object_name, sprintf("%s_%s", [given_name, family_name]))
