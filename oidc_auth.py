@@ -2,6 +2,7 @@ import requests
 import xml.etree.ElementTree as ET
 from minio import Minio
 from minio.error import S3Error
+from getpass import getpass
 
 # Configurazioni e costanti
 keycloak_url = "https://keycloak.local/realms/MinIO/protocol/openid-connect/token"
@@ -64,8 +65,8 @@ def main():
     print("Benvenuto nel client MinIO con autenticazione OIDC")
 
     # Input username e password
-    username = input("Inserisci il tuo username: ")
-    password = input("Inserisci la tua password: ")
+    username = input("Inserisci username: ")
+    password = getpass("Inserisci la password: ")
 
     # Ottieni token OIDC
     token_oidc = ottieni_token_oidc(username, password)
@@ -80,11 +81,7 @@ def main():
     if not all([access_key, secret_key, session_token]):
         print("Impossibile ottenere le credenziali STS. Esco.")
         return
-
     print("Credenziali STS ottenute con successo.")
-    print(f"Access Key: {access_key}")
-    print(f"Secret Key: {secret_key}")
-    print(f"Session Token: {session_token}")
     # Inizializza client MinIO con le credenziali temporanee
     client = Minio(
         "minio-api.local",
